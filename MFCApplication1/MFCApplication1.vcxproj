@@ -115,12 +115,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\IDE\WIN;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0;C:\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world451d.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\x64\Debug;C:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world451d.lib;wolfssl.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

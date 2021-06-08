@@ -23,7 +23,6 @@
 #define IDC_BUTTON_ADD_NEW_USER         1012
 #define IDC_EDIT_NEW_USER_NAME          1013
 #define IDC_BUTTON_PLAY                 1014
-#define IDC_EDIT3                       1017
 #define IDC_EDIT_LOG                    1017
 
 // Next default values for new objects
