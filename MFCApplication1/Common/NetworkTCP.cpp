@@ -16,7 +16,7 @@
 // OpenTCPListenPort - Creates a Listen TCP port to accept
 // connection requests
 //-----------------------------------------------------------------
-
+#define CERT_FILE "./certs/ca-cert.pem"
 WOLFSSL_CTX* ctx = NULL;
 WOLFSSL* ssl = NULL;
 TTcpListenPort *OpenTcpListenPort(short localport)
@@ -235,8 +235,6 @@ TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * re
             perror("connect failed");
             return(NULL);
 	  }
-  printf("4. connect\n");
-
 
   // Configure the wolfSSL library
   if (wolfSSL_Init() != WOLFSSL_SUCCESS) {
@@ -258,15 +256,12 @@ TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * re
   }
   
   /* Load client certificates into WOLFSSL_CTX */
-  /*
   int ret = 0;
-  if ((ret = wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE, NULL))
-      != WOLFSSL_SUCCESS) {
-      fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
-          CERT_FILE);
-      goto exit;
+  if ((ret = wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE, NULL)) != WOLFSSL_SUCCESS) {
+      printf("ERROR: failed to load %s, please check the file error = %d.\n", CERT_FILE, ret);
+      return(NULL);
   }
-  */
+  
   // Create the SSL object
   if ((ssl = wolfSSL_new(ctx)) == NULL) {
       printf("Error creating final SSL object.\n");
@@ -323,7 +318,8 @@ void CloseTcpConnectedPort(TTcpConnectedPort **TcpConnectedPort)
 // ReadDataTcp - Reads the specified amount TCP data 
 //-----------------------------------------------------------------
 ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length)
-{/*
+{ 
+    /*
  ssize_t bytes;
  
  for (size_t i = 0; i < length; i += bytes)
@@ -334,13 +330,15 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
       }
     }
   return(length);*/
-  int ret = 0;
-  //memset(buff, 0, sizeof(buff));
-  if ((ret = wolfSSL_read(ssl, data, sizeof(data) - 1)) < 0) {
-      printf("ERROR: failed to read\n");
-      return(-1);
-  }
-  return(ret);
+    ssize_t bytes = 0;
+    for (size_t i = 0; i < length; i += bytes)
+    {
+        if ((bytes = wolfSSL_recv(ssl, (char*)(data + i), length - i,0)) < 0)
+        {
+            return (-1);
+        }
+    }
+    return(length);
 }
 //-----------------------------------------------------------------
 // END ReadDataTcp
@@ -366,13 +364,19 @@ ssize_t WriteDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, si
    }
    return(total_bytes_written);
     */
-   int ret = 0;
-   if ((ret = wolfSSL_write(ssl, data, length)) != length) {
-       printf("ERROR: failed to write entire message\n");
-       printf("%d bytes of %d bytes were sent", ret, (int)length);
-       return(-1);
-   }
-   return(ret);
+
+    ssize_t total_bytes_written = 0;
+    ssize_t bytes_written;
+    while (total_bytes_written != length)
+    {
+        bytes_written = wolfSSL_write(ssl, (char*)(data + total_bytes_written), length - total_bytes_written);
+        if (bytes_written < 0)
+        {
+            return(-1);
+        }
+        total_bytes_written += bytes_written;
+    }
+    return(total_bytes_written);
 }
 //-----------------------------------------------------------------
 // END WriteDataTcp

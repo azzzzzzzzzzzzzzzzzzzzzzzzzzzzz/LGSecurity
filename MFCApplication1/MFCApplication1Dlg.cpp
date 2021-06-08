@@ -15,8 +15,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-#define DEFAULT_PORT "5000"
-#define DEFAULT_IP "192.168.0.239"
+#define DEFAULT_PORT "6666"
+#define DEFAULT_IP "192.168.0.223"
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -214,7 +214,7 @@ void CMFCApplication1Dlg::OnClose()
 
 void CMFCApplication1Dlg::OnTimer(UINT_PTR nIDEvent)
 {
-	if (m_bPlay == false) return;
+	//if (m_bPlay == false) return;
 	//printf("OnTimer\n");
 	bool retvalue;
 	retvalue = TcpRecvImageAsJpeg(m_tcpConnectedPort, &m_matImage);
