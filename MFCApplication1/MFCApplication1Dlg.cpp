@@ -361,7 +361,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 	}
 
 	// TODO: Add request
-	msgTest(this->m_hWnd);
+	//msgTest(this->m_hWnd);
 	m_EditName.EnableWindow(false);
 	m_EditImageNum.EnableWindow(false);
 	m_btnAdd.EnableWindow(false);
