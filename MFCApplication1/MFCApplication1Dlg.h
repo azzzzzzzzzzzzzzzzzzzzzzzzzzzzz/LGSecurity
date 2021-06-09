@@ -57,6 +57,7 @@ protected:
 	CEdit m_EditName;
 	CEdit m_EditImageNum;
 	CEdit m_EditLog;
+	CSpinButtonCtrl m_spinIMGNum;
 	//CRichEditCtrl m_logView;
 	// 
 	bool m_bModeStart;
@@ -70,6 +71,7 @@ protected:
 	void CreateBitmapInfo(int w, int h, int bpp);
 	void DrawImage();
 	void printLog(CString logStr);
+	bool checkString(CString str);
 public:	
 	afx_msg void OnDestroy();
 	afx_msg void OnClose();
@@ -81,4 +83,6 @@ public:
 	afx_msg void OnBnClickedButtonAddNewUser();
 	afx_msg void OnBnClickSecureRadioCtrl(UINT ID);
 	afx_msg void OnBnClickOperModeRadioCtrl(UINT ID);
+	afx_msg void OnDeltaposSpinImageNum(NMHDR* pNMHDR, LRESULT* pResult);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

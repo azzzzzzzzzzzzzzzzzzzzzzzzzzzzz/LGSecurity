@@ -9,14 +9,15 @@
 #include "afxdialogex.h"
 #include "Common/NetworkTCP.h"
 #include "Common/TcpSendRecvJpeg.h"
-#include "Common/NetworkUDP.h"
-#include "Common/UdpSendRecvJpeg.h"
+#include <regex>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-#define DEFAULT_PORT "6666"
+#define DEFAULT_PORT "55555"
 #define DEFAULT_IP "192.168.0.223"
+#define DRAW_TIMER 1000
+#define ADD_TIMEOUT_TIMER 1001
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -69,7 +70,7 @@ void CMFCApplication1Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PICTURE, m_picture);
-	DDX_Control(pDX, IDC_BUTTON_PLAY, m_btnPlay); 
+	DDX_Control(pDX, IDC_BUTTON_PLAY, m_btnPlay);
 	DDX_Control(pDX, IDC_BUTTON_MODE_START, m_btnStart);
 	DDX_Control(pDX, IDC_BUTTON_ADD_NEW_USER, m_btnAdd);
 	DDX_Control(pDX, IDC_RADIO_MODE_LEARNING, m_radioLearning);
@@ -82,6 +83,7 @@ void CMFCApplication1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_LOG, m_EditLog);
 	DDX_Radio(pDX, IDC_RADIO_SECURE, (int&)m_radioBtnSecureMode);
 	DDX_Radio(pDX, IDC_RADIO_MODE_LEARNING, (int&)m_radioBtnOperMode);
+	DDX_Control(pDX, IDC_SPIN_IMAGE_NUM, m_spinIMGNum);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
@@ -97,12 +99,12 @@ BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_ADD_NEW_USER, &CMFCApplication1Dlg::OnBnClickedButtonAddNewUser)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_SECURE, IDC_RADIO_NON_SECURE, &CMFCApplication1Dlg::OnBnClickSecureRadioCtrl)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_MODE_LEARNING, IDC_RADIO_MODE_TEST_RUN, &CMFCApplication1Dlg::OnBnClickOperModeRadioCtrl)
+	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_IMAGE_NUM, &CMFCApplication1Dlg::OnDeltaposSpinImageNum)
 END_MESSAGE_MAP()
 
 
 // CMFCApplication1Dlg 메시지 처리기
 TTcpConnectedPort* m_tcpConnectedPort = NULL;
-TUdpLocalPort* UdpLocalPort = NULL;
 struct sockaddr_in remaddr;	/* remote address */
 socklen_t addrlen = sizeof(remaddr);/* length of addresses */
 BOOL CMFCApplication1Dlg::OnInitDialog()
@@ -134,13 +136,17 @@ BOOL CMFCApplication1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	m_EditImageNum.SetWindowText(_T("1"));
+	m_spinIMGNum.SetRange(1, 5);
+	m_spinIMGNum.SetPos(1);
+
 	if ((m_tcpConnectedPort = OpenTcpConnection(DEFAULT_IP, DEFAULT_PORT)) == NULL)  
 	{
 		printf("OpenTcpConnection\n");
 		//return(-1);
 	}
 	else
-		SetTimer(1000, 10, NULL);
+		SetTimer(DRAW_TIMER, 10, NULL);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -214,15 +220,25 @@ void CMFCApplication1Dlg::OnClose()
 
 void CMFCApplication1Dlg::OnTimer(UINT_PTR nIDEvent)
 {
-	//if (m_bPlay == false) return;
-	//printf("OnTimer\n");
-	bool retvalue;
-	retvalue = TcpRecvImageAsJpeg(m_tcpConnectedPort, &m_matImage);
-		
-	if (retvalue)
+	switch (nIDEvent)
 	{
-		if (m_pBitmapInfo == NULL) CreateBitmapInfo(m_matImage.cols, m_matImage.rows, m_matImage.channels() * 8);
-		DrawImage();
+	case DRAW_TIMER:
+		//printf("OnTimer\n");
+		bool retvalue;
+		retvalue = TcpRecvImageAsJpeg(m_tcpConnectedPort, &m_matImage);
+
+		if (retvalue && m_bPlay)
+		{
+			if (m_pBitmapInfo == NULL) CreateBitmapInfo(m_matImage.cols, m_matImage.rows, m_matImage.channels() * 8);
+			DrawImage();
+		}
+		break;
+	case ADD_TIMEOUT_TIMER:
+		m_EditName.EnableWindow(true);
+		m_EditImageNum.EnableWindow(true);
+		m_btnAdd.EnableWindow(true);
+		KillTimer(ADD_TIMEOUT_TIMER);
+		break;
 	}
 
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
@@ -280,6 +296,15 @@ void CMFCApplication1Dlg::printLog(CString logStr)
 	m_EditLog.ReplaceSel(logStr);
 }
 
+bool CMFCApplication1Dlg::checkString(CString str)
+{
+	regex pattern("^[a-zA-Z0-9]*$");
+	if (regex_match(std::string(CT2CA(str)) , pattern))
+		return true;
+	else
+		return false;
+}
+
 
 void CMFCApplication1Dlg::OnBnClickedButtonPlay()
 {
@@ -324,6 +349,23 @@ void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
 void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString name;
+	CString num;
+	m_EditName.GetWindowTextW(name);
+	m_EditImageNum.GetWindowTextW(num);
+	int cnt = _ttoi(num);
+	if (name.IsEmpty() || checkString(name) == false)
+	{
+		AfxMessageBox(_T("유효한 이름을 입력해주세요. (알파벳, 숫자만 허용)"));
+		return;
+	}
+
+	// TODO: Add request
+	msgTest(this->m_hWnd);
+	m_EditName.EnableWindow(false);
+	m_EditImageNum.EnableWindow(false);
+	m_btnAdd.EnableWindow(false);
+	SetTimer(ADD_TIMEOUT_TIMER, 3000, NULL);
 }
 
 void CMFCApplication1Dlg::OnBnClickSecureRadioCtrl(UINT ID)
@@ -364,3 +406,31 @@ void CMFCApplication1Dlg::OnBnClickOperModeRadioCtrl(UINT ID)
 	printf("mode2 %d\n", m_radioBtnOperMode);
 }
 
+void CMFCApplication1Dlg::OnDeltaposSpinImageNum(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int val = pNMUpDown->iPos + pNMUpDown->iDelta;
+
+	if ((1 <= val) && (val <= 5))
+	{
+		CString sValue;
+		sValue.Format(_T("%d\n"), val);
+		m_EditImageNum.SetWindowText(sValue);
+	}
+
+	*pResult = 0;
+}
+
+BOOL CMFCApplication1Dlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_ESCAPE)
+			return TRUE;
+		else if (pMsg->wParam == VK_RETURN)
+			return TRUE;
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
+}
