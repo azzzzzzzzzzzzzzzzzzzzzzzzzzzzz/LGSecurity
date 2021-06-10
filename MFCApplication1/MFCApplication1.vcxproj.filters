@@ -54,6 +54,9 @@
     <ClInclude Include="Common\utils.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ProtocolDef.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCApplication1.cpp">
