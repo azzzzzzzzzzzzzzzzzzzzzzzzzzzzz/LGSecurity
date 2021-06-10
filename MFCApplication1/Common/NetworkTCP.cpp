@@ -235,51 +235,51 @@ TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * re
             perror("connect failed");
             return(NULL);
 	  }
-
+  printf("4. connect TcpConnectedPort END\n");
   // Configure the wolfSSL library
   if (wolfSSL_Init() != WOLFSSL_SUCCESS) {
       printf("Error initializing wolfSSL library.\n");
       return(NULL);
   }
-
+  printf("5. Configure the wolfSSL library END\n");
   // Configure wolfSSL CTX functionality
   WOLFSSL_METHOD* wolfSslMethod = wolfTLSv1_3_client_method();
   if (wolfSslMethod == NULL) {
       printf("Unable to allocate TLS v1.3 method.\n");
       return(NULL);
   }
-
+  printf("6. Configure wolfSSL CTX functionality END\n");
   ctx = wolfSSL_CTX_new(wolfSslMethod);
   if (ctx == NULL) {
       printf("Unable get create SSL context.\n");
       return(NULL);
   }
-  
+  printf("7. wolfSSL_CTX_new END\n");
   /* Load client certificates into WOLFSSL_CTX */
   int ret = 0;
   if ((ret = wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE, NULL)) != WOLFSSL_SUCCESS) {
       printf("ERROR: failed to load %s, please check the file error = %d.\n", CERT_FILE, ret);
       return(NULL);
   }
-  
+  printf("8. Load client certificates into WOLFSSL_CTX END\n");
   // Create the SSL object
   if ((ssl = wolfSSL_new(ctx)) == NULL) {
       printf("Error creating final SSL object.\n");
       return(NULL);
   }
-
+  printf("9. Create the SSL object END\n");
   // Attach the socket file descriptor to wolfSSL
   if (wolfSSL_set_fd(ssl, TcpConnectedPort->ConnectedFd) != WOLFSSL_SUCCESS) {
       printf("Error attaching socket fd to wolfSSL.\n");
       return(NULL);
   }
-
+  printf("10. Attach the socket file descriptor to wolfSSL END\n");
   // Call Connect for incoming connections
   if (wolfSSL_connect(ssl) != WOLFSSL_SUCCESS) {
       printf("Error establishing TLS connection to host.\n");//호스트에 대한 TLS 연결을 설정하는 동안 오류가 발생했습니다.
       return(NULL);
   }
-
+  printf("11. Call Connect for incoming connections END\n");
   freeaddrinfo(result);	 
   return(TcpConnectedPort);
 }
@@ -302,7 +302,7 @@ void CloseTcpConnectedPort(TTcpConnectedPort **TcpConnectedPort)
 #if  defined(_WIN32) || defined(_WIN64)
    WSACleanup();
 #endif
-
+   printf("wolfSSL_free\n");
    if (ssl) {
        wolfSSL_free(ssl);
    }

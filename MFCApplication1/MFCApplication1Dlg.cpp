@@ -53,8 +53,28 @@ END_MESSAGE_MAP()
 
 
 // CMFCApplication1Dlg 대화 상자
+TTcpConnectedPort* m_tcpConnectedPort = NULL;
+struct sockaddr_in remaddr;	/* remote address */
+socklen_t addrlen = sizeof(remaddr);/* length of addresses */
 
+UINT ThreadForRecvImg(LPVOID param)
+{
+	CMFCApplication1Dlg* pMain = (CMFCApplication1Dlg*)param;
+	while (pMain->m_isWorkingThread)
+	{
+		Sleep(10);	
+		bool retvalue;
+		retvalue = TcpRecvImageAsJpeg(m_tcpConnectedPort, &pMain->m_matImage);
 
+		if (retvalue && pMain->m_bPlay)
+		{
+			if (pMain->m_pBitmapInfo == NULL) pMain->CreateBitmapInfo(pMain->m_matImage.cols, pMain->m_matImage.rows, pMain->m_matImage.channels() * 8);
+			pMain->DrawImage();
+		}
+	}
+
+	return 0;
+}
 
 CMFCApplication1Dlg::CMFCApplication1Dlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCAPPLICATION1_DIALOG, pParent)
@@ -62,6 +82,8 @@ CMFCApplication1Dlg::CMFCApplication1Dlg(CWnd* pParent /*=nullptr*/)
 	, m_radioBtnOperMode(0)
 	, m_bPlay(true)
 	, m_bModeStart(false)
+	, m_isWorkingThread(false)
+	, m_pThread(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -104,9 +126,7 @@ END_MESSAGE_MAP()
 
 
 // CMFCApplication1Dlg 메시지 처리기
-TTcpConnectedPort* m_tcpConnectedPort = NULL;
-struct sockaddr_in remaddr;	/* remote address */
-socklen_t addrlen = sizeof(remaddr);/* length of addresses */
+
 BOOL CMFCApplication1Dlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -142,11 +162,15 @@ BOOL CMFCApplication1Dlg::OnInitDialog()
 
 	if ((m_tcpConnectedPort = OpenTcpConnection(DEFAULT_IP, DEFAULT_PORT)) == NULL)  
 	{
-		printf("OpenTcpConnection\n");
+		printf(" Fail OpenTcpConnection\n");
 		//return(-1);
 	}
 	else
-		SetTimer(DRAW_TIMER, 10, NULL);
+	{
+		m_isWorkingThread = true;
+		m_pThread = AfxBeginThread(ThreadForRecvImg, this);
+		//SetTimer(DRAW_TIMER, 10, NULL);
+	}
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -207,6 +231,11 @@ void CMFCApplication1Dlg::OnDestroy()
 	CDialogEx::OnDestroy();
 
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	if (m_pThread != NULL)
+	{
+		m_isWorkingThread = false;
+		m_pThread = NULL;
+	}
 }
 
 
@@ -223,15 +252,7 @@ void CMFCApplication1Dlg::OnTimer(UINT_PTR nIDEvent)
 	switch (nIDEvent)
 	{
 	case DRAW_TIMER:
-		//printf("OnTimer\n");
-		bool retvalue;
-		retvalue = TcpRecvImageAsJpeg(m_tcpConnectedPort, &m_matImage);
 
-		if (retvalue && m_bPlay)
-		{
-			if (m_pBitmapInfo == NULL) CreateBitmapInfo(m_matImage.cols, m_matImage.rows, m_matImage.channels() * 8);
-			DrawImage();
-		}
 		break;
 	case ADD_TIMEOUT_TIMER:
 		m_EditName.EnableWindow(true);
@@ -290,16 +311,28 @@ void CMFCApplication1Dlg::DrawImage()
 
 void CMFCApplication1Dlg::printLog(CString logStr)
 {
+	CTime time = CTime::GetCurrentTime();
+	CString log;
+	log.Format(_T("[%s]	%s  \r\n"), (LPCTSTR)time.Format(L"%Y-%m-%d %H:%M:%S"), logStr);
 	int len = m_EditLog.GetWindowTextLength();
 	m_EditLog.SetSel(len, len); 
-	logStr.Append(CString("\r\n"));
-	m_EditLog.ReplaceSel(logStr);
+
+	m_EditLog.ReplaceSel(log);
 }
 
 bool CMFCApplication1Dlg::checkString(CString str)
 {
-	regex pattern("^[a-zA-Z0-9]*$");
+	regex pattern("^[a-zA-Z]*$");
 	if (regex_match(std::string(CT2CA(str)) , pattern))
+		return true;
+	else
+		return false;
+}
+
+bool CMFCApplication1Dlg::checkIDPW(CString str)
+{
+	regex pattern("^[a-zA-Z0-9]*$");
+	if (regex_match(std::string(CT2CA(str)), pattern))
 		return true;
 	else
 		return false;
@@ -317,13 +350,24 @@ void CMFCApplication1Dlg::OnBnClickedButtonPlay()
 void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString id;
+	CString pw;
+	m_EditID.GetWindowTextW(id);
+	m_EditPW.GetWindowTextW(pw);
+
+	if (id.IsEmpty() || checkIDPW(id) == false || pw.IsEmpty() || checkIDPW(pw) == false)
+	{
+		AfxMessageBox(_T("유효한 ID, PW를 입력해주세요. (알파벳, 숫자만 허용)"));
+		return;
+	}
+
+
 	m_btnStart.EnableWindow(TRUE);
 	m_radioLearning.EnableWindow(TRUE);
 	m_radioRun.EnableWindow(TRUE);
 	m_radioTestRun.EnableWindow(TRUE);
 	//CRadio
 }
-
 
 void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
 {
@@ -345,7 +389,6 @@ void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
 	}
 }
 
-
 void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -356,11 +399,12 @@ void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 	int cnt = _ttoi(num);
 	if (name.IsEmpty() || checkString(name) == false)
 	{
-		AfxMessageBox(_T("유효한 이름을 입력해주세요. (알파벳, 숫자만 허용)"));
+		AfxMessageBox(_T("유효한 이름을 입력해주세요. (알파벳만 허용)"));
 		return;
 	}
 
 	// TODO: Add request
+	printLog(_T("add button"));
 	//msgTest(this->m_hWnd);
 	m_EditName.EnableWindow(false);
 	m_EditImageNum.EnableWindow(false);

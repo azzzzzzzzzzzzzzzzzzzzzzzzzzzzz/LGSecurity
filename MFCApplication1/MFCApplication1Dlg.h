@@ -3,25 +3,14 @@
 //
 
 #pragma once
-
 #include "opencv2/opencv.hpp" 
 #include <opencv2/highgui/highgui.hpp>
+#include "ProtocolDef.h"
 using namespace cv;
 using namespace std;
 // CMFCApplication1Dlg 대화 상자
+//#define MESSAGE_INCREASE_COUNT WM_USER+9
 
-enum SecureMode
-{
-	MODE_SECURE,
-	MODE_NON_SECURE,
-};
-
-enum OperMode
-{
-	MODE_LEARNING,
-	MODE_RUN,
-	MODE_TEST_RUN,
-};
 
 class CMFCApplication1Dlg : public CDialogEx
 {
@@ -42,8 +31,7 @@ public:
 protected:
 	HICON m_hIcon;
 	CStatic m_picture;
-	Mat m_matImage;
-	BITMAPINFO* m_pBitmapInfo = NULL;
+	
 	CButton m_btnStart;
 	CButton m_btnPlay;
 	CButton m_btnAdd;
@@ -58,21 +46,22 @@ protected:
 	CEdit m_EditImageNum;
 	CEdit m_EditLog;
 	CSpinButtonCtrl m_spinIMGNum;
-	//CRichEditCtrl m_logView;
-	// 
-	bool m_bModeStart;
-	bool m_bPlay;
+	
 	// 생성된 메시지 맵 함수
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
-	void CreateBitmapInfo(int w, int h, int bpp);
-	void DrawImage();
-	void printLog(CString logStr);
-	bool checkString(CString str);
+	
 public:	
+	bool m_bModeStart;
+	bool m_bPlay;
+	CWinThread* m_pThread;
+	bool m_isWorkingThread;
+	Mat m_matImage;
+	BITMAPINFO* m_pBitmapInfo = NULL;
+
 	afx_msg void OnDestroy();
 	afx_msg void OnClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -84,5 +73,11 @@ public:
 	afx_msg void OnBnClickSecureRadioCtrl(UINT ID);
 	afx_msg void OnBnClickOperModeRadioCtrl(UINT ID);
 	afx_msg void OnDeltaposSpinImageNum(NMHDR* pNMHDR, LRESULT* pResult);
+
+	void CreateBitmapInfo(int w, int h, int bpp);
+	void DrawImage();
+	void printLog(CString logStr);
+	bool checkString(CString str);
+	bool checkIDPW(CString str);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
