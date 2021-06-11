@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include "NetworkTCP.h"
+#include "ProtocolDef.h"
 //-----------------------------------------------------------------
 // OpenTCPListenPort - Creates a Listen TCP port to accept
 // connection requests
@@ -19,6 +20,7 @@
 #define CERT_FILE "./certs/ca-cert.pem"
 WOLFSSL_CTX* ctx = NULL;
 WOLFSSL* ssl = NULL;
+
 TTcpListenPort *OpenTcpListenPort(short localport)
 {
   TTcpListenPort *TcpListenPort;
@@ -156,7 +158,7 @@ TTcpConnectedPort *AcceptTcpConnection(TTcpListenPort *TcpListenPort,
 // OpenTCPConnection - Creates a TCP Connection to a TCP port
 // accepting connection requests
 //-----------------------------------------------------------------
-TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno)
+TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno, bool isSecure)
 {
     printf("Start OpenTcpConnection.\n");
   TTcpConnectedPort *TcpConnectedPort;
@@ -235,51 +237,56 @@ TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * re
             perror("connect failed");
             return(NULL);
 	  }
-  printf("4. connect TcpConnectedPort END\n");
-  // Configure the wolfSSL library
-  if (wolfSSL_Init() != WOLFSSL_SUCCESS) {
-      printf("Error initializing wolfSSL library.\n");
-      return(NULL);
+
+  if (isSecure)
+  {
+      printf("4. connect TcpConnectedPort END\n");
+      // Configure the wolfSSL library
+      if (wolfSSL_Init() != WOLFSSL_SUCCESS) {
+          printf("Error initializing wolfSSL library.\n");
+          return(NULL);
+      }
+      printf("5. Configure the wolfSSL library END\n");
+      // Configure wolfSSL CTX functionality
+      WOLFSSL_METHOD* wolfSslMethod = wolfTLSv1_3_client_method();
+      if (wolfSslMethod == NULL) {
+          printf("Unable to allocate TLS v1.3 method.\n");
+          return(NULL);
+      }
+      printf("6. Configure wolfSSL CTX functionality END\n");
+      ctx = wolfSSL_CTX_new(wolfSslMethod);
+      if (ctx == NULL) {
+          printf("Unable get create SSL context.\n");
+          return(NULL);
+      }
+      printf("7. wolfSSL_CTX_new END\n");
+      /* Load client certificates into WOLFSSL_CTX */
+      int ret = 0;
+      if ((ret = wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE, NULL)) != WOLFSSL_SUCCESS) {
+          printf("ERROR: failed to load %s, please check the file error = %d.\n", CERT_FILE, ret);
+          return(NULL);
+      }
+      printf("8. Load client certificates into WOLFSSL_CTX END\n");
+      // Create the SSL object
+      if ((ssl = wolfSSL_new(ctx)) == NULL) {
+          printf("Error creating final SSL object.\n");
+          return(NULL);
+      }
+      printf("9. Create the SSL object END\n");
+      // Attach the socket file descriptor to wolfSSL
+      if (wolfSSL_set_fd(ssl, TcpConnectedPort->ConnectedFd) != WOLFSSL_SUCCESS) {
+          printf("Error attaching socket fd to wolfSSL.\n");
+          return(NULL);
+      }
+      printf("10. Attach the socket file descriptor to wolfSSL END\n");
+      // Call Connect for incoming connections
+      if (wolfSSL_connect(ssl) != WOLFSSL_SUCCESS) {
+          printf("Error establishing TLS connection to host.\n");//호스트에 대한 TLS 연결을 설정하는 동안 오류가 발생했습니다.
+          return(NULL);
+      }
+      printf("11. Call Connect for incoming connections END\n");
   }
-  printf("5. Configure the wolfSSL library END\n");
-  // Configure wolfSSL CTX functionality
-  WOLFSSL_METHOD* wolfSslMethod = wolfTLSv1_3_client_method();
-  if (wolfSslMethod == NULL) {
-      printf("Unable to allocate TLS v1.3 method.\n");
-      return(NULL);
-  }
-  printf("6. Configure wolfSSL CTX functionality END\n");
-  ctx = wolfSSL_CTX_new(wolfSslMethod);
-  if (ctx == NULL) {
-      printf("Unable get create SSL context.\n");
-      return(NULL);
-  }
-  printf("7. wolfSSL_CTX_new END\n");
-  /* Load client certificates into WOLFSSL_CTX */
-  int ret = 0;
-  if ((ret = wolfSSL_CTX_load_verify_locations(ctx, CERT_FILE, NULL)) != WOLFSSL_SUCCESS) {
-      printf("ERROR: failed to load %s, please check the file error = %d.\n", CERT_FILE, ret);
-      return(NULL);
-  }
-  printf("8. Load client certificates into WOLFSSL_CTX END\n");
-  // Create the SSL object
-  if ((ssl = wolfSSL_new(ctx)) == NULL) {
-      printf("Error creating final SSL object.\n");
-      return(NULL);
-  }
-  printf("9. Create the SSL object END\n");
-  // Attach the socket file descriptor to wolfSSL
-  if (wolfSSL_set_fd(ssl, TcpConnectedPort->ConnectedFd) != WOLFSSL_SUCCESS) {
-      printf("Error attaching socket fd to wolfSSL.\n");
-      return(NULL);
-  }
-  printf("10. Attach the socket file descriptor to wolfSSL END\n");
-  // Call Connect for incoming connections
-  if (wolfSSL_connect(ssl) != WOLFSSL_SUCCESS) {
-      printf("Error establishing TLS connection to host.\n");//호스트에 대한 TLS 연결을 설정하는 동안 오류가 발생했습니다.
-      return(NULL);
-  }
-  printf("11. Call Connect for incoming connections END\n");
+
   freeaddrinfo(result);	 
   return(TcpConnectedPort);
 }
@@ -317,27 +324,44 @@ void CloseTcpConnectedPort(TTcpConnectedPort **TcpConnectedPort)
 //-----------------------------------------------------------------
 // ReadDataTcp - Reads the specified amount TCP data 
 //-----------------------------------------------------------------
+#pragma pack(push, 1)    // 1바이트 크기로 정렬
+typedef  struct {
+    unsigned char head[4];
+    int32_t  size;
+} PacketHeader;
+
+typedef  struct {
+    PacketHeader hdr;
+    unsigned char payload[0];
+} Packet;
+#pragma pack(pop)
+
 ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length)
 { 
-    /*
- ssize_t bytes;
- 
- for (size_t i = 0; i < length; i += bytes)
-    {
-      if ((bytes = recv(TcpConnectedPort->ConnectedFd, (char *)(data+i), length  - i,0)) == -1) 
-      {
-       return (-1);
-      }
-    }
-  return(length);*/
     ssize_t bytes = 0;
+	ssize_t my_packet_size = 0;
+    ssize_t accumulated = 0;
+
     for (size_t i = 0; i < length; i += bytes)
     {
-        if ((bytes = wolfSSL_recv(ssl, (char*)(data + i), length - i,0)) < 0)
+        if ((bytes = recv(TcpConnectedPort->ConnectedFd, (char*)(data + i), length - i, 0)) == -1)
         {
-            return (-1);
+	        return (-1);
         }
+        accumulated += bytes;
+        if (i == 0) {
+	        Packet* p = (Packet*)data;
+	        //printf("Length=%d received=%d header=%4s packet_length=%d\n", length, bytes, p->hdr.head, p->hdr.size);
+	        if (p->hdr.head[0] == 'S' && p->hdr.head[1] == 'B' && p->hdr.head[2] == '1' && p->hdr.head[3] == 'T') {
+	            my_packet_size = p->hdr.size;
+	        }
+	        //print_pkt_header(data, 60);
+        }
+        //printf("accumulated packets=%u   my_packet_size=%u\n", accumulated, my_packet_size);
+        if (accumulated >= my_packet_size)
+	        return accumulated;
     }
+
     return(length);
 }
 //-----------------------------------------------------------------
@@ -348,23 +372,38 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
 //-----------------------------------------------------------------
 ssize_t WriteDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length)
 {
-    /*
-  ssize_t total_bytes_written = 0;
-  ssize_t bytes_written;
-  while (total_bytes_written != length)
-    {
-     bytes_written = send(TcpConnectedPort->ConnectedFd,
-	                               (char *)(data+total_bytes_written),
-                                  length - total_bytes_written,0);
-     if (bytes_written == -1)
-       {
-       return(-1);
-      }
-     total_bytes_written += bytes_written;
-   }
-   return(total_bytes_written);
-    */
+    ssize_t total_bytes_written = 0;
+    ssize_t bytes_written;
 
+    while (total_bytes_written != length)
+    {
+        bytes_written = send(TcpConnectedPort->ConnectedFd,
+            (char*)(data + total_bytes_written),
+            length - total_bytes_written, 0);
+        if (bytes_written == -1)
+        {
+            return(-1);
+        }
+        total_bytes_written += bytes_written;
+    }
+
+    return(total_bytes_written);
+}
+ssize_t ReadDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* data, size_t length)
+{
+    ssize_t bytes = 0;
+    ssize_t my_packet_size = 0;
+    ssize_t accumulated = 0;
+
+    for (size_t i = 0; i < length; i += bytes)
+    {
+        if ((bytes = wolfSSL_recv(ssl, (char*)(data + i), length - i, 0)) < 0)
+            return (-1);
+    }
+    return(length);
+}
+ssize_t WriteDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* data, size_t length)
+{
     ssize_t total_bytes_written = 0;
     ssize_t bytes_written;
     while (total_bytes_written != length)
@@ -377,6 +416,13 @@ ssize_t WriteDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, si
         total_bytes_written += bytes_written;
     }
     return(total_bytes_written);
+}
+void TestCode()
+{
+    CWnd* pWnd = AfxGetApp()->GetMainWnd(); //AfxGetMainWnd();
+    HWND hWnd = pWnd->m_hWnd;
+
+    PostMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_SERVER_ERROR, NULL);
 }
 //-----------------------------------------------------------------
 // END WriteDataTcp

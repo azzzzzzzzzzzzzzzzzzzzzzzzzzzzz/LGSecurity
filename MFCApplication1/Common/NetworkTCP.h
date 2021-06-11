@@ -55,11 +55,13 @@ TTcpListenPort *OpenTcpListenPort(short localport);
 void CloseTcpListenPort(TTcpListenPort **TcpListenPort);
 TTcpConnectedPort *AcceptTcpConnection(TTcpListenPort *TcpListenPort, 
                        struct sockaddr_in *cli_addr,socklen_t *clilen);
-TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno);
+TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno, bool isSecure);
 void CloseTcpConnectedPort(TTcpConnectedPort **TcpConnectedPort);
 ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length);
 ssize_t WriteDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length);
-
+ssize_t ReadDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* data, size_t length);
+ssize_t WriteDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* data, size_t length);
+void TestCode();
 #endif
 //------------------------------------------------------------------------------------------------
 //END of Include

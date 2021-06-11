@@ -7,8 +7,8 @@
 #include "MFCApplication1.h"
 #include "MFCApplication1Dlg.h"
 #include "afxdialogex.h"
-#include "Common/NetworkTCP.h"
-#include "Common/TcpSendRecvJpeg.h"
+//#include "Common/NetworkTCP.h"
+//#include "Common/TcpSendRecvJpeg.h"
 #include <regex>
 
 #ifdef _DEBUG
@@ -60,15 +60,28 @@ socklen_t addrlen = sizeof(remaddr);/* length of addresses */
 UINT ThreadForRecvImg(LPVOID param)
 {
 	CMFCApplication1Dlg* pMain = (CMFCApplication1Dlg*)param;
+
+	// Send msg to server : start send image
+	NetworkManager* networkManager = pMain->getNetworkManager();
+
+	//networkManager->sendRequestImageStartToServer();
+
 	while (pMain->m_isWorkingThread)
 	{
 		Sleep(10);	
+		
+		// KSS
+		int msgType = 0;
+		long long timestamp = 0;
+		string userId = "";
+		int imgSize = 0;
+		
 		bool retvalue;
-		retvalue = TcpRecvImageAsJpeg(m_tcpConnectedPort, &pMain->m_matImage);
+		retvalue = networkManager->readRecvImage(&pMain->m_matImage, msgType, timestamp, userId, imgSize);
 
-		if (retvalue && pMain->m_bPlay)
+		if (retvalue && pMain->getPlayStatus())
 		{
-			if (pMain->m_pBitmapInfo == NULL) pMain->CreateBitmapInfo(pMain->m_matImage.cols, pMain->m_matImage.rows, pMain->m_matImage.channels() * 8);
+			if (pMain->getBitmapInfo() == NULL) pMain->CreateBitmapInfo(pMain->m_matImage.cols, pMain->m_matImage.rows, pMain->m_matImage.channels() * 8);
 			pMain->DrawImage();
 		}
 	}
@@ -84,6 +97,7 @@ CMFCApplication1Dlg::CMFCApplication1Dlg(CWnd* pParent /*=nullptr*/)
 	, m_bModeStart(false)
 	, m_isWorkingThread(false)
 	, m_pThread(NULL)
+	, mNetworkManager(NULL)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -122,6 +136,8 @@ BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_SECURE, IDC_RADIO_NON_SECURE, &CMFCApplication1Dlg::OnBnClickSecureRadioCtrl)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_MODE_LEARNING, IDC_RADIO_MODE_TEST_RUN, &CMFCApplication1Dlg::OnBnClickOperModeRadioCtrl)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_IMAGE_NUM, &CMFCApplication1Dlg::OnDeltaposSpinImageNum)
+	ON_MESSAGE(MESSAGE_SHOW_POPUPDLG, &CMFCApplication1Dlg::showPopupDialog)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_VIDEO, &CMFCApplication1Dlg::OnBnClickedButtonSelectVideo)
 END_MESSAGE_MAP()
 
 
@@ -160,17 +176,7 @@ BOOL CMFCApplication1Dlg::OnInitDialog()
 	m_spinIMGNum.SetRange(1, 5);
 	m_spinIMGNum.SetPos(1);
 
-	if ((m_tcpConnectedPort = OpenTcpConnection(DEFAULT_IP, DEFAULT_PORT)) == NULL)  
-	{
-		printf(" Fail OpenTcpConnection\n");
-		//return(-1);
-	}
-	else
-	{
-		m_isWorkingThread = true;
-		m_pThread = AfxBeginThread(ThreadForRecvImg, this);
-		//SetTimer(DRAW_TIMER, 10, NULL);
-	}
+	mNetworkManager = new NetworkManager();
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -242,7 +248,8 @@ void CMFCApplication1Dlg::OnDestroy()
 void CMFCApplication1Dlg::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	CloseTcpConnectedPort(&m_tcpConnectedPort);
+	//CloseTcpConnectedPort(&m_tcpConnectedPort);
+	delete mNetworkManager;
 	CDialogEx::OnClose();
 }
 
@@ -354,13 +361,28 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	CString pw;
 	m_EditID.GetWindowTextW(id);
 	m_EditPW.GetWindowTextW(pw);
-
 	if (id.IsEmpty() || checkIDPW(id) == false || pw.IsEmpty() || checkIDPW(pw) == false)
 	{
 		AfxMessageBox(_T("유효한 ID, PW를 입력해주세요. (알파벳, 숫자만 허용)"));
 		return;
 	}
 
+	// KSS TODO
+	if (false == mNetworkManager->openTcpConnection())
+	{
+		printf(" Fail OpenTcpConnection\n");
+		return;
+	}
+
+	// send login ID, PW
+	//mNetworkManager->sendRequestLoginToServer(string(CT2CA(id)), string(CT2CA(pw)));
+
+	// receive login result
+
+	// login success
+	mNetworkManager->setSecureMode((m_radioBtnSecureMode == MODE_SECURE)? true : false);
+	m_isWorkingThread = true;
+	m_pThread = AfxBeginThread(ThreadForRecvImg, this);
 
 	m_btnStart.EnableWindow(TRUE);
 	m_radioLearning.EnableWindow(TRUE);
@@ -426,7 +448,6 @@ void CMFCApplication1Dlg::OnBnClickSecureRadioCtrl(UINT ID)
 	default:
 		break;
 	}
-	printLog(CString("radio1"));
 	printf("mode1 %d\n", m_radioBtnSecureMode);
 }
 
@@ -477,4 +498,64 @@ BOOL CMFCApplication1Dlg::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+LRESULT CMFCApplication1Dlg::showPopupDialog(WPARAM wParam, LPARAM IParam)
+{
+	switch (wParam)
+	{
+	case MSG_SERVER_ERROR:
+		AfxMessageBox(_T("서버에 에러가 발생하였습니다."));
+		break;
+	case MSG_LEARNING_COMPLETE:
+		AfxMessageBox(_T("이름 추가가 완료되었습니다."));
+		break;
+	case MSG_LOGIN_DUPLICATED_ID:
+		AfxMessageBox(_T("중복된 ID입니다."));
+		break;
+	case MSG_LOGIN_ERROR:
+		AfxMessageBox(_T("로그인에 실패하였습니다."));
+		break;
+	case MSG_NO_PERMISSION:
+		AfxMessageBox(_T("권한이 없습니다."));
+		break;
+	case MSG_OK:
+		AfxMessageBox(_T("성공!"));
+		break;
+	default:
+		AfxMessageBox(_T("정의되지 않은 메세지입니다."));
+		break;
+	}
+	return LRESULT();
+}
+
+int CMFCApplication1Dlg::getRadioBtnSecureMode()
+{
+	return m_radioBtnSecureMode;
+}
+
+int CMFCApplication1Dlg::getRadioBtnOperationMode()
+{
+	return m_radioBtnOperMode;
+}
+
+bool CMFCApplication1Dlg::getPlayStatus()
+{
+	return m_bPlay;
+}
+
+BITMAPINFO* CMFCApplication1Dlg::getBitmapInfo()
+{
+	return m_pBitmapInfo;
+}
+
+NetworkManager* CMFCApplication1Dlg::getNetworkManager()
+{
+	return mNetworkManager;
+}
+
+
+void CMFCApplication1Dlg::OnBnClickedButtonSelectVideo()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

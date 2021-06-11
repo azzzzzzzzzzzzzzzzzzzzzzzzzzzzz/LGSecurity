@@ -115,12 +115,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>.\;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\IDE\WIN;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0;C:\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\user\Documents\SSLecture\protobuf-cpp-3.17.2\protobuf-3.17.2\src;.\;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\IDE\WIN;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0;C:\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\x64\Debug;C:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world451d.lib;wolfssl.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\user\Documents\SSLecture\protobuf-cpp-3.17.2\build\Debug;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\x64\Debug;C:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world451d.lib;wolfssl.lib;libprotobufd.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -168,14 +168,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\IDE\WIN;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0;.\;C:\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\user\Documents\SSLecture\protobuf-cpp-3.17.2\protobuf-3.17.2\src;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\IDE\WIN;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0;.\;C:\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\x64\Release;C:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_world451.lib;wolfssl.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\user\Documents\SSLecture\protobuf-cpp-3.17.2\build\Release;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\x64\Release;C:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world451.lib;wolfssl.lib;libprotobuf.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -189,8 +189,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Common\NetworkManager.h" />
     <ClInclude Include="Common\NetworkTCP.h" />
     <ClInclude Include="Common\NetworkUDP.h" />
+    <ClInclude Include="Common\Protocol\ImageProtocol.h" />
+    <ClInclude Include="Common\Protocol\LoginProtocol.h" />
+    <ClInclude Include="Common\Protocol\Msg\protocolImage.pb.h" />
+    <ClInclude Include="Common\Protocol\Msg\protocolLogin.pb.h" />
+    <ClInclude Include="Common\Protocol\ProtocolManager.h" />
     <ClInclude Include="Common\SG_InputBox.h" />
     <ClInclude Include="Common\SG_InputBoxLib.h" />
     <ClInclude Include="Common\TcpSendRecvJpeg.h" />
@@ -205,8 +211,14 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Common\NetworkManager.cpp" />
     <ClCompile Include="Common\NetworkTCP.cpp" />
     <ClCompile Include="Common\NetworkUDP.cpp" />
+    <ClCompile Include="Common\Protocol\ImageProtocol.cpp" />
+    <ClCompile Include="Common\Protocol\LoginProtocol.cpp" />
+    <ClCompile Include="Common\Protocol\Msg\protocolImage.pb.cc" />
+    <ClCompile Include="Common\Protocol\Msg\protocolLogin.pb.cc" />
+    <ClCompile Include="Common\Protocol\ProtocolManager.cpp" />
     <ClCompile Include="Common\SG_InputBox.cpp" />
     <ClCompile Include="Common\TcpSendRecvJpeg.cpp" />
     <ClCompile Include="Common\UdpSendRecvJpeg.cpp" />
@@ -224,6 +236,8 @@
     <ResourceCompile Include="MFCApplication1.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Common\Protocol\Msg\protocolImage.proto" />
+    <None Include="Common\Protocol\Msg\protocolLogin.proto" />
     <None Include="res\MFCApplication1.rc2" />
   </ItemGroup>
   <ItemGroup>

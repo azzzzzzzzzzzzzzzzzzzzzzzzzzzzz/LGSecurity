@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package protocol_msg;
+
+message ImageMsg {
+	int32 msg_type = 1;
+	int64 timestamp = 2;
+	string user_id = 3;
+	int32 img_size = 4;
+	bytes img_data = 5;
+}

@@ -6,11 +6,11 @@
 #include "opencv2/opencv.hpp" 
 #include <opencv2/highgui/highgui.hpp>
 #include "ProtocolDef.h"
+#include "Common/NetworkManager.h"
+
 using namespace cv;
 using namespace std;
 // CMFCApplication1Dlg 대화 상자
-//#define MESSAGE_INCREASE_COUNT WM_USER+9
-
 
 class CMFCApplication1Dlg : public CDialogEx
 {
@@ -80,4 +80,15 @@ public:
 	bool checkString(CString str);
 	bool checkIDPW(CString str);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	LRESULT showPopupDialog(WPARAM wParam, LPARAM IParam);
+	int getRadioBtnSecureMode();
+	int getRadioBtnOperationMode();
+	bool getPlayStatus();
+	BITMAPINFO* getBitmapInfo();
+	NetworkManager* getNetworkManager();
+
+private:
+	NetworkManager* mNetworkManager;
+public:
+	afx_msg void OnBnClickedButtonSelectVideo();
 };
