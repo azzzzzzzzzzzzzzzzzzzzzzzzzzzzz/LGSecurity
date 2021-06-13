@@ -394,12 +394,34 @@ ssize_t ReadDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* da
     ssize_t bytes = 0;
     ssize_t my_packet_size = 0;
     ssize_t accumulated = 0;
-
+    /*
     for (size_t i = 0; i < length; i += bytes)
     {
         if ((bytes = wolfSSL_recv(ssl, (char*)(data + i), length - i, 0)) < 0)
             return (-1);
     }
+    return(length);
+    */
+    for (size_t i = 0; i < length; i += bytes)
+    {
+        if ((bytes = wolfSSL_recv(ssl, (char*)(data + i), length - i, 0)) < 0)
+        {
+            return (-1);
+        }
+        accumulated += bytes;
+        if (i == 0) {
+            Packet* p = (Packet*)data;
+            //printf("Length=%d received=%d header=%4s packet_length=%d\n", length, bytes, p->hdr.head, p->hdr.size);
+            if (p->hdr.head[0] == 'S' && p->hdr.head[1] == 'B' && p->hdr.head[2] == '1' && p->hdr.head[3] == 'T') {
+                my_packet_size = p->hdr.size;
+            }
+            //print_pkt_header(data, 60);
+        }
+        //printf("accumulated packets=%u   my_packet_size=%u\n", accumulated, my_packet_size);
+        if (accumulated >= my_packet_size)
+            return accumulated;
+    }
+
     return(length);
 }
 ssize_t WriteDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* data, size_t length)

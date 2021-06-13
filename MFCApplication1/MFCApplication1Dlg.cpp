@@ -66,7 +66,7 @@ UINT ThreadForRecvImg(LPVOID param)
 
 	//networkManager->sendRequestImageStartToServer();
 
-	while (pMain->m_isWorkingThread)
+	while (pMain->IsWorkingThread())
 	{
 		Sleep(10);	
 		
@@ -77,11 +77,11 @@ UINT ThreadForRecvImg(LPVOID param)
 		int imgSize = 0;
 		
 		bool retvalue;
-		retvalue = networkManager->readRecvImage(&pMain->m_matImage, msgType, timestamp, userId, imgSize);
+		retvalue = networkManager->readRecvImage(pMain->getMatImage(), msgType, timestamp, userId, imgSize);
 
 		if (retvalue && pMain->getPlayStatus())
 		{
-			if (pMain->getBitmapInfo() == NULL) pMain->CreateBitmapInfo(pMain->m_matImage.cols, pMain->m_matImage.rows, pMain->m_matImage.channels() * 8);
+			if (pMain->getBitmapInfo() == NULL) pMain->CreateBitmapInfo(pMain->getMatImage()->cols, pMain->getMatImage()->rows, pMain->getMatImage()->channels() * 8);
 			pMain->DrawImage();
 		}
 	}
@@ -120,6 +120,8 @@ void CMFCApplication1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO_SECURE, (int&)m_radioBtnSecureMode);
 	DDX_Radio(pDX, IDC_RADIO_MODE_LEARNING, (int&)m_radioBtnOperMode);
 	DDX_Control(pDX, IDC_SPIN_IMAGE_NUM, m_spinIMGNum);
+	DDX_Control(pDX, IDC_LIST_VIDEO, m_ListVideo);
+	DDX_Control(pDX, IDC_BUTTON_SELECT_VIDEO, m_btnSelect);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
@@ -137,6 +139,7 @@ BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_MODE_LEARNING, IDC_RADIO_MODE_TEST_RUN, &CMFCApplication1Dlg::OnBnClickOperModeRadioCtrl)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_IMAGE_NUM, &CMFCApplication1Dlg::OnDeltaposSpinImageNum)
 	ON_MESSAGE(MESSAGE_SHOW_POPUPDLG, &CMFCApplication1Dlg::showPopupDialog)
+	ON_MESSAGE(MESSAGE_ADD_ITEM_TO_LIST, &CMFCApplication1Dlg::addVideoItemToList)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_VIDEO, &CMFCApplication1Dlg::OnBnClickedButtonSelectVideo)
 END_MESSAGE_MAP()
 
@@ -175,7 +178,8 @@ BOOL CMFCApplication1Dlg::OnInitDialog()
 	m_EditImageNum.SetWindowText(_T("1"));
 	m_spinIMGNum.SetRange(1, 5);
 	m_spinIMGNum.SetPos(1);
-
+	m_radioLearning.SetCheck(FALSE);
+	m_radioRun.SetCheck(TRUE);
 	mNetworkManager = new NetworkManager();
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
@@ -357,6 +361,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonPlay()
 void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	mNetworkManager->setSecureMode((m_radioBtnSecureMode == MODE_SECURE) ? true : false);
 	CString id;
 	CString pw;
 	m_EditID.GetWindowTextW(id);
@@ -380,15 +385,12 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	// receive login result
 
 	// login success
-	mNetworkManager->setSecureMode((m_radioBtnSecureMode == MODE_SECURE)? true : false);
+	
 	m_isWorkingThread = true;
 	m_pThread = AfxBeginThread(ThreadForRecvImg, this);
 
 	m_btnStart.EnableWindow(TRUE);
-	m_radioLearning.EnableWindow(TRUE);
-	m_radioRun.EnableWindow(TRUE);
-	m_radioTestRun.EnableWindow(TRUE);
-	//CRadio
+	setModeRadioBtnStatus();
 }
 
 void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
@@ -397,17 +399,31 @@ void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
 	m_bModeStart = !m_bModeStart;
 	m_btnStart.SetWindowText((m_bModeStart) ? CString("Stop") : CString("Start"));
 
-	if (m_bModeStart && m_radioBtnOperMode == MODE_LEARNING)
+	setModeRadioBtnStatus();
+
+	if (m_bModeStart)//start
 	{
-		m_EditName.EnableWindow(TRUE);
-		m_EditImageNum.EnableWindow(TRUE);
-		m_btnAdd.EnableWindow(TRUE);
+		if (m_radioBtnOperMode == MODE_LEARNING)
+		{
+			m_EditName.EnableWindow(TRUE);
+			m_EditImageNum.EnableWindow(TRUE);
+			m_btnAdd.EnableWindow(TRUE);
+		}
+		else if (m_radioBtnOperMode == MODE_TEST_RUN)
+		{
+			m_ListVideo.EnableWindow(TRUE);
+			m_btnSelect.EnableWindow(TRUE);
+			//send video request message to server
+		}
 	}
-	else
+	else//stop
 	{
+		clearVideoList();
 		m_EditName.EnableWindow(FALSE);
 		m_EditImageNum.EnableWindow(FALSE);
 		m_btnAdd.EnableWindow(FALSE);
+		m_ListVideo.EnableWindow(FALSE);
+		m_btnSelect.EnableWindow(FALSE);
 	}
 }
 
@@ -440,10 +456,10 @@ void CMFCApplication1Dlg::OnBnClickSecureRadioCtrl(UINT ID)
 	switch (ID)
 	{
 	case IDC_RADIO_SECURE:
-		AfxMessageBox(_T("IDC_RADIO_SECURE"));
+		//AfxMessageBox(_T("IDC_RADIO_SECURE"));
 		break;
 	case IDC_RADIO_NON_SECURE:
-		AfxMessageBox(_T("IDC_RADIO_NON_SECURE"));
+		//AfxMessageBox(_T("IDC_RADIO_NON_SECURE"));
 		break;
 	default:
 		break;
@@ -457,13 +473,13 @@ void CMFCApplication1Dlg::OnBnClickOperModeRadioCtrl(UINT ID)
 	switch (ID)
 	{
 	case IDC_RADIO_MODE_LEARNING:
-		AfxMessageBox(_T("IDC_RADIO_MODE_LEARNING"));
+		//AfxMessageBox(_T("IDC_RADIO_MODE_LEARNING"));
 		break;
 	case IDC_RADIO_MODE_RUN:
-		AfxMessageBox(_T("IDC_RADIO_MODE_RUN"));
+		//AfxMessageBox(_T("IDC_RADIO_MODE_RUN"));
 		break;
 	case IDC_RADIO_MODE_TEST_RUN:
-		AfxMessageBox(_T("IDC_RADIO_TEST_RUN"));
+		//AfxMessageBox(_T("IDC_RADIO_TEST_RUN"));
 		break;
 	default:
 		break;
@@ -522,9 +538,27 @@ LRESULT CMFCApplication1Dlg::showPopupDialog(WPARAM wParam, LPARAM IParam)
 	case MSG_OK:
 		AfxMessageBox(_T("성공!"));
 		break;
+	case MSG_NO_VIDEO:
+		AfxMessageBox(_T("서버에 저장된 비디오가 없습니다."));
+		break;
 	default:
 		AfxMessageBox(_T("정의되지 않은 메세지입니다."));
 		break;
+	}
+	return LRESULT();
+}
+
+LRESULT CMFCApplication1Dlg::addVideoItemToList(WPARAM wParam, LPARAM IParam)
+{
+	CString* pstrString = (CString*)IParam;
+	CString strString = pstrString->GetString();
+	switch (wParam)
+	{
+	case MESSAGE_ADD_ITEM_TO_LIST:
+		m_ListVideo.AddString(strString);
+		break;
+	default:
+		break;		
 	}
 	return LRESULT();
 }
@@ -554,8 +588,40 @@ NetworkManager* CMFCApplication1Dlg::getNetworkManager()
 	return mNetworkManager;
 }
 
+bool CMFCApplication1Dlg::IsWorkingThread()
+{
+	return m_isWorkingThread;
+}
+
+Mat* CMFCApplication1Dlg::getMatImage()
+{
+	return &m_matImage;
+}
+
+void CMFCApplication1Dlg::clearVideoList()
+{
+	m_ListVideo.ResetContent();
+}
+
+void CMFCApplication1Dlg::setModeRadioBtnStatus()
+{
+	m_radioLearning.EnableWindow((mNetworkManager->isAdmin() && !m_bModeStart)? TRUE : FALSE);
+	m_radioRun.EnableWindow(!m_bModeStart);
+	m_radioTestRun.EnableWindow(!m_bModeStart);
+}
+
 
 void CMFCApplication1Dlg::OnBnClickedButtonSelectVideo()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString itemSelected;
+	int nSel = m_ListVideo.GetCurSel();
+	if (nSel != LB_ERR)
+	{
+		m_ListVideo.GetText(nSel, itemSelected);
+		//send selected video name to server
+
+	}
+	else
+		AfxMessageBox(_T("비디오를 선택해주세요."));
 }

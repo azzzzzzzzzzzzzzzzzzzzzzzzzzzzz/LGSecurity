@@ -4,6 +4,8 @@
 
 NetworkManager::NetworkManager()
 :mIsSecure(true)
+,mIsAdmin(false)
+, mMode(MODE_RUN)
 {
 	mProtocolManager = new ProtocolManager();
 }
@@ -29,7 +31,7 @@ void NetworkManager::makeHeader(unsigned char* buff, unsigned int size)
 
 bool NetworkManager::openTcpConnection()
 {
-	if ((mTcpConnectedPort = OpenTcpConnection(DEFAULT_IP.c_str(), DEFAULT_PORT.c_str())) == NULL)
+	if ((mTcpConnectedPort = OpenTcpConnection(DEFAULT_IP.c_str(), DEFAULT_PORT.c_str(), mIsSecure)) == NULL)
 	{
 		printf(" Fail OpenTcpConnection\n");
 		return false;
@@ -71,6 +73,21 @@ size_t NetworkManager::sendRequestImageStopToServer()
 	makeHeader(mControlBuff, msgSize + HEADER_SIZE);
 
 	return WriteDataTcp(mTcpConnectedPort, mControlBuff, msgSize + HEADER_SIZE);
+}
+
+size_t NetworkManager::sendRequestModeChangeToServer(UINT mode)
+{
+	return size_t();
+}
+
+size_t NetworkManager::sendRequestPlaySelectedVideoToServer(string videoName)
+{
+	return size_t();
+}
+
+size_t NetworkManager::sendRequestAddImgNameToServer(string imgName, UINT imgCnt)
+{
+	return size_t();
 }
 
 size_t NetworkManager::sendResponseLogin(const bool isSuccess, const string id, const int authority)
@@ -136,5 +153,31 @@ void NetworkManager::setSecureMode(const bool mode)
 {
 	mIsSecure = mode;
 }
+
+void NetworkManager::setIsAdmin(const bool admin)
+{
+	mIsAdmin = admin;
+}
+
+void NetworkManager::setMode(const UINT mode)
+{
+	mMode = mode;
+}
+
+bool NetworkManager::isSecure()
+{
+	return mIsSecure;
+}
+
+bool NetworkManager::isAdmin()
+{
+	return mIsAdmin;
+}
+
+UINT NetworkManager::getMode()
+{
+	return mMode;
+}
+
 
 

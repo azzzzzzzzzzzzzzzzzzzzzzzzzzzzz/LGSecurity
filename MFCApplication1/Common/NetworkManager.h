@@ -25,6 +25,8 @@ private:
 	unsigned char* mImageBuff = new unsigned char[IMAGE_BUFF_SIZE];
 	unsigned char* mTcpBuff = new unsigned char[TCP_BUFF_SIZE];
 	bool mIsSecure;
+	bool mIsAdmin;
+	UINT mMode;
 
 	void makeHeader(unsigned char* buff, unsigned int size);
 
@@ -35,6 +37,10 @@ public:
 	size_t sendRequestImageStartToServer();
 	size_t sendRequestImageStopToServer();
 
+	size_t sendRequestModeChangeToServer(UINT mode);
+	size_t sendRequestPlaySelectedVideoToServer(string videoName);
+	size_t sendRequestAddImgNameToServer(string imgName, UINT imgCnt);
+
 	size_t sendResponseLogin(const bool isSuccess, const string id, const int authority);
 	size_t sendImageToClient(TTcpConnectedPort* tcpConnectionPort, const string id, const int mode, const int fileSize, const char* fileBuffer);
 
@@ -43,6 +49,11 @@ public:
 	bool readRecvImage(cv::Mat* Image, int& msgType, long long& timestamp, string& userId, int& imgSize);
 	size_t readDataTcp(bool isSecure);
 	void setSecureMode(const bool mode);
+	void setIsAdmin(const bool admin);
+	void setMode(const UINT mode);
+	bool isSecure();
+	bool isAdmin();
+	UINT getMode();
 
 	NetworkManager();
 	~NetworkManager();

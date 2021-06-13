@@ -1,5 +1,6 @@
 #pragma once
-#define MESSAGE_SHOW_POPUPDLG WM_USER+9
+#define MESSAGE_SHOW_POPUPDLG WM_USER+10
+#define MESSAGE_ADD_ITEM_TO_LIST WM_USER+11
 enum SecureMode
 {
 	MODE_SECURE,
@@ -37,4 +38,9 @@ enum MsgRecv
 	MSG_LOGIN_DUPLICATED_ID = 1501,
 	MSG_LOGIN_ERROR = 1502,
 	MSG_NO_PERMISSION = 1503,
+};
+
+enum MsgUserDefine
+{
+	MSG_NO_VIDEO = 2000,
 };

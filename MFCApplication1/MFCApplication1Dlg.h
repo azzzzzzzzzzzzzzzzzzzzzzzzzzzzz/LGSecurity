@@ -35,6 +35,7 @@ protected:
 	CButton m_btnStart;
 	CButton m_btnPlay;
 	CButton m_btnAdd;
+	CButton m_btnSelect;
 	UINT m_radioBtnSecureMode;
 	UINT m_radioBtnOperMode;
 	CButton m_radioLearning;
@@ -46,6 +47,7 @@ protected:
 	CEdit m_EditImageNum;
 	CEdit m_EditLog;
 	CSpinButtonCtrl m_spinIMGNum;
+	CListBox m_ListVideo;
 	
 	// 생성된 메시지 맵 함수
 	virtual BOOL OnInitDialog();
@@ -53,14 +55,13 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
-	
-public:	
 	bool m_bModeStart;
 	bool m_bPlay;
 	CWinThread* m_pThread;
 	bool m_isWorkingThread;
 	Mat m_matImage;
 	BITMAPINFO* m_pBitmapInfo = NULL;
+public:	
 
 	afx_msg void OnDestroy();
 	afx_msg void OnClose();
@@ -73,6 +74,7 @@ public:
 	afx_msg void OnBnClickSecureRadioCtrl(UINT ID);
 	afx_msg void OnBnClickOperModeRadioCtrl(UINT ID);
 	afx_msg void OnDeltaposSpinImageNum(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnBnClickedButtonSelectVideo();
 
 	void CreateBitmapInfo(int w, int h, int bpp);
 	void DrawImage();
@@ -81,14 +83,18 @@ public:
 	bool checkIDPW(CString str);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	LRESULT showPopupDialog(WPARAM wParam, LPARAM IParam);
+	LRESULT addVideoItemToList(WPARAM wParam, LPARAM IParam);
 	int getRadioBtnSecureMode();
 	int getRadioBtnOperationMode();
 	bool getPlayStatus();
 	BITMAPINFO* getBitmapInfo();
 	NetworkManager* getNetworkManager();
+	bool IsWorkingThread();
+	Mat* getMatImage();
+	void clearVideoList();
+	void setModeRadioBtnStatus();
+	
 
 private:
 	NetworkManager* mNetworkManager;
-public:
-	afx_msg void OnBnClickedButtonSelectVideo();
 };
