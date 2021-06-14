@@ -15,17 +15,6 @@ NetworkManager::~NetworkManager()
 	delete mProtocolManager;
 	delete[] buff;
 }
-/*
-void NetworkManager::makeHeader(unsigned char* buff, unsigned int size)
-{
-	*buff = 'S';
-	*(buff + 1) = 'B';
-	*(buff + 2) = '1';
-	*(buff + 3) = 'T';
-
-	memcpy(buff + 4, &size, 4);
-}
-*/
 
 bool NetworkManager::openTcpConnection()
 {
@@ -44,116 +33,7 @@ bool NetworkManager::openTcpConnection()
 		else
 			return true;
 	}
-		
-	
 }
-/*
-size_t NetworkManager::sendRequestLoginToServer(const string id, const string pw)
-{
-	size_t msgSize = mProtocolManager->getLoginMsgToServer(&mLoginBuff[HEADER_SIZE], id, pw);
-	if (0 == msgSize) {
-		return 0;
-	}
-	makeHeader(mLoginBuff, msgSize + HEADER_SIZE);
-
-	return WriteDataTcp(mTcpConnectedPort, mLoginBuff, msgSize + HEADER_SIZE);
-}
-
-size_t NetworkManager::sendRequestImageStartToServer()
-{
-	size_t msgSize = mProtocolManager->getImageSendStopMsgToServer(&mControlBuff[HEADER_SIZE], MsgReq::MSG_CONTROL_START_SEND_IMAGE);
-	if (0 == msgSize) {
-		return 0;
-	}
-	makeHeader(mControlBuff, msgSize + HEADER_SIZE);
-
-	return WriteDataTcp(mTcpConnectedPort, mControlBuff, msgSize + HEADER_SIZE);
-}
-
-size_t NetworkManager::sendRequestImageStopToServer()
-{
-	size_t msgSize = mProtocolManager->getImageSendStopMsgToServer(&mControlBuff[HEADER_SIZE], MsgReq::MSG_CONTROL_STOP_SEND_IMAGE);
-	if (0 == msgSize) {
-		return 0;
-	}
-	makeHeader(mControlBuff, msgSize + HEADER_SIZE);
-
-	return WriteDataTcp(mTcpConnectedPort, mControlBuff, msgSize + HEADER_SIZE);
-}
-
-size_t NetworkManager::sendRequestModeChangeToServer(UINT mode)
-{
-	return size_t();
-}
-
-size_t NetworkManager::sendRequestPlaySelectedVideoToServer(string videoName)
-{
-	return size_t();
-}
-
-size_t NetworkManager::sendRequestAddImgNameToServer(string imgName, UINT imgCnt)
-{
-	return size_t();
-}
-
-size_t NetworkManager::sendResponseLogin(const bool isSuccess, const string id, const int authority)
-{
-	size_t msgSize = 0;
-	if (isSuccess) {
-		msgSize = mProtocolManager->getLoginMsgToClient(&mLoginBuff[HEADER_SIZE], MsgRecv::MSG_OK, id, authority);
-	}
-	else {
-		msgSize = mProtocolManager->getLoginMsgToClient(&mLoginBuff[HEADER_SIZE], MsgRecv::MSG_LOGIN_ERROR, id, 2);
-	}
-	if (0 == msgSize) {
-		return 0;
-	}
-	makeHeader(mLoginBuff, msgSize + HEADER_SIZE);
-	return WriteDataTcp(mTcpConnectedPort, mLoginBuff, msgSize + HEADER_SIZE);
-	return size_t();
-}
-
-size_t NetworkManager::sendImageToClient(TTcpConnectedPort* tcpConnectionPort, const string id, const int mode, const int fileSize, const char* fileBuffer)
-{
-	size_t msgSize = mProtocolManager->getImageMsgToClient(&mImageBuff[HEADER_SIZE], mode, id, fileSize, fileBuffer);
-	if (0 == msgSize) {
-		return 0;
-	}
-	makeHeader(mImageBuff, msgSize + HEADER_SIZE);
-
-	return WriteDataTcp(tcpConnectionPort, mImageBuff, msgSize + HEADER_SIZE);
-}
-
-string NetworkManager::parseImageMsg(const unsigned char* dataToBeParsed, const int dataSize, string& id, int& mode, long long& timestamp, int& imgSize)
-{
-	return mProtocolManager->parseImageMsg(dataToBeParsed, dataSize, id, mode, timestamp, imgSize);
-}
-
-bool NetworkManager::readRecvImage(cv::Mat* Image, int& msgType, long long& timestamp, string& userId, int& imgSize)
-{
-	size_t msgSize = readDataTcp(mIsSecure);
-	string recvImg = "";
-	if (msgSize > 8 && msgSize < TCP_BUFF_SIZE) {
-		recvImg = parseImageMsg(&mTcpBuff[HEADER_SIZE], msgSize - HEADER_SIZE, userId, msgType, timestamp, imgSize);
-	}
-
-	//cout << imgSize << endl;
-
-	if (!recvImg.empty() && imgSize > 0) {
-		cv::imdecode(cv::Mat(imgSize, 1, CV_8UC1, (unsigned char*)recvImg.c_str()), cv::IMREAD_COLOR, Image);
-		if (!(*Image).empty()) return true;
-		else return false;
-	}
-	else {
-		return false;
-	}
-}
-
-size_t NetworkManager::readDataTcp(bool isSecure)
-{
-	return (mIsSecure)? ReadDataTcpTLS(mTcpConnectedPort, mTcpBuff, TCP_BUFF_SIZE) : ReadDataTcp(mTcpConnectedPort, mTcpBuff, TCP_BUFF_SIZE);
-}*/
-
 
 void NetworkManager::setSecureMode(const bool mode)
 {
@@ -190,6 +70,9 @@ UINT NetworkManager::getMode()
 bool NetworkManager::get_a_packet(Mat* pImage)
 {
 	ssize_t ret = 0;
+	CWnd* pWnd = AfxGetApp()->GetMainWnd();
+	HWND hWnd = pWnd->m_hWnd;
+
 	if (mIsSecure)
 		ret = ReadDataTcpTLS(mTcpConnectedPort, buff, PACKET_MAX_BUFFER_SIZE);
 	else
@@ -206,24 +89,54 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 			{
 				printf("MsgReq::MSG_IMAGE\n");
 				CImageProtocol* img_pkt = dynamic_cast<CImageProtocol*>(pbase);
-				cv::imdecode(cv::Mat(img_pkt->msg.img_size(), 1, CV_8UC1, (uchar*)img_pkt->msg.img_data().c_str()), cv::IMREAD_COLOR, pImage);
-				// pImage->data = (uchar*)img_pkt->msg.img_data().c_str();
-				//if (!(*pImage).empty()) imshow("Server", *pImage); // If a valid image is received then display it
-
-				break;
+				cv::imdecode(cv::Mat(img_pkt->msg.img_size(), 1, CV_8UC1, (uchar*)img_pkt->msg.img_data().c_str()), cv::IMREAD_COLOR, pImage);								
 			}
-			case MSG_VIDEO_FILE_LIST:
+			break;
+			case MSG_ACK:// ¼º°ø
 			{
-				printf("MsgReq::MSG_IMAGE\n");
+				
+				CAckProtocol* pkt = dynamic_cast<CAckProtocol*>(pbase);
+				printf("MsgReq::MSG_OK %d\n", pkt->msg.acktype());
+				//if (pkt->msg.acktype() == MSG_OK)
+				{
+					setIsAdmin((pkt->msg.arg() == MODE_ADMIN) ? true : false);
+					SendMessage(hWnd, MESSAGE_USER, MSG_LOGIN_SUCCESS, NULL);
+				}
+				//else if(pkt->msg.acktype() == MSG_NOK)
+				//{
+				//	SendMessage(hWnd, MESSAGE_USER, MSG_LOGIN_FAIL, NULL);
+				//}
+			}
+			break;
+			case MSG_NOK:
+			{
+				printf("MsgReq::MSG_NOK\n");
+				SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_NOK, NULL);
+				//CLoginProtocol* img_pkt = dynamic_cast<CImageProtocol*>(pbase);
+			}
+			break;
+			case MSG_VIDEO_RECV:
+			{
+				printf("MSG_VIDEO_RECV\n");
 				CVideoFileListProtocol* fileLIstPacket = dynamic_cast<CVideoFileListProtocol*>(pbase);
-				vector<string> fileList;
+				vector<std::string> fileList;
 				fileList.assign(fileLIstPacket->msg.filelist().begin(), fileLIstPacket->msg.filelist().end());
-				break;
+				if(fileList.size() == 0)
+					SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_NO_VIDEO, NULL);
+
+				for (int i = 0; i < fileList.size(); i++)
+				{
+					std::string str = fileList.at(i);
+					CString videoStr(str.c_str());
+					SendMessage(hWnd, MESSAGE_USER, MSG_VIDEO_RECV, LPARAM(&videoStr));
+				}
+				printf("MSG_VIDEO_RECV END\n"); 
+				//PostMessage(hWnd, MESSAGE_ADD_ITEM_TO_LIST, MSG_PRINT_LOG, LPARAM(&str));
 			}
+			break;
 			case MSG_LEARNING_COMPLETE:
-			{
-				break;
-			}
+				SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_LEARNING_COMPLETE, NULL);
+			break;
 			default:
 				printf("Unknown msg type..\n");
 				break;

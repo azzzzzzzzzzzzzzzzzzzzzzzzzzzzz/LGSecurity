@@ -24,7 +24,7 @@ typedef SSIZE_T ssize_t;
 #define  BAD_SOCKET_FD INVALID_SOCKET
 #define CERT_FILE "./certs/ca-cert.pem"
 #define KEY_FILE  "private.pem"
-#define CHAIN_CERT_FILE "ca-cert.pem"
+#define CHAIN_CERT_FILE "./certs/ca-cert.pem"
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>

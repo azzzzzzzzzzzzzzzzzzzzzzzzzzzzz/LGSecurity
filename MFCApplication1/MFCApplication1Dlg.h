@@ -60,7 +60,7 @@ protected:
 	CWinThread* m_pThread;
 	bool m_isWorkingThread;
 	Mat m_matImage;
-	BITMAPINFO* m_pBitmapInfo = NULL;
+	BITMAPINFO* m_pBitmapInfo;
 public:	
 
 	afx_msg void OnDestroy();

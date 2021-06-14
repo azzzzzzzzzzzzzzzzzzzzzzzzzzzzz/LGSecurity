@@ -28,29 +28,11 @@ private:
 	bool mIsAdmin;
 	UINT mMode;
 
-	//void makeHeader(unsigned char* buff, unsigned int size);
-
 public:
 	bool get_a_packet(Mat* pImage);
 	bool send_packet(CBaseProtocol& protocol);
 		
 	bool openTcpConnection();
-	/*
-	size_t sendRequestLoginToServer(const string id, const string pw);
-	size_t sendRequestImageStartToServer();
-	size_t sendRequestImageStopToServer();
-
-	size_t sendRequestModeChangeToServer(UINT mode);
-	size_t sendRequestPlaySelectedVideoToServer(string videoName);
-	size_t sendRequestAddImgNameToServer(string imgName, UINT imgCnt);
-
-	size_t sendResponseLogin(const bool isSuccess, const string id, const int authority);
-	size_t sendImageToClient(TTcpConnectedPort* tcpConnectionPort, const string id, const int mode, const int fileSize, const char* fileBuffer);
-
-	string parseImageMsg(const unsigned char* dataToBeParsed, const int dataSize, string& id, int& mode, long long& timestamp, int& imgSize);
-
-	bool readRecvImage(cv::Mat* Image, int& msgType, long long& timestamp, string& userId, int& imgSize);
-	size_t readDataTcp(bool isSecure);*/
 	void setSecureMode(const bool mode);
 	void setIsAdmin(const bool admin);
 	void setMode(const UINT mode);

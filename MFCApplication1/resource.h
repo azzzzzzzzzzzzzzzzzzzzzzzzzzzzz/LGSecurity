@@ -16,8 +16,8 @@
 #define IDC_RADIO_SECURE                1004
 #define IDC_RADIO_NON_SECURE            1005
 #define IDC_BUTTON_MODE_START           1006
-#define IDC_RADIO_MODE_LEARNING         1007
-#define IDC_RADIO_MODE_RUN              1008
+#define IDC_RADIO_MODE_RUN				1007
+#define IDC_RADIO_MODE_LEARNING         1008
 #define IDC_RADIO_MODE_TEST_RUN         1009
 #define IDC_EDIT_NEW_USER_IMGNUM        1010
 #define IDC_BUTTON_ADD_NEW_USER         1012
@@ -27,6 +27,7 @@
 #define IDC_SPIN_IMAGE_NUM              1019
 #define IDC_LIST_VIDEO                  1020
 #define IDC_BUTTON_SELECT_VIDEO         1021
+#define IDC_BUTTON_LOGOUT               1022
 
 // Next default values for new objects
 // 
@@ -34,7 +35,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1022
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

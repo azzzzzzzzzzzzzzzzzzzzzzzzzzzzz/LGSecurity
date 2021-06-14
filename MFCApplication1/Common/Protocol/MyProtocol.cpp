@@ -77,7 +77,7 @@ CVideoFileListProtocol::CVideoFileListProtocol(vector<string> &videos)
 		CVideoSelectedIndexProtocol
 ---------------------------*/
 CVideoSelectedIndexProtocol::CVideoSelectedIndexProtocol(const unsigned int index)
-	:CBaseProtocol(MSG_VIDEO_FILE_LIST, &msg)
+	:CBaseProtocol(MSG_VIDEO_SELECTED, &msg)
 {
 	msg.set_index(index);
 }

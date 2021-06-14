@@ -313,7 +313,7 @@ TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char *
 		perror("setsockopt SO_SNDBUF failed");
 		return(NULL);
 	}
-
+	/*
 	timeval tv;
 	tv.tv_sec  = 2;
 	tv.tv_usec = 0;
@@ -323,7 +323,7 @@ TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char *
 		perror("setsockopt SO_RCVTIMEO failed");
 		return(NULL);
 	}	
-
+	*/
 	if (connect(TcpConnectedPort->ConnectedFd,result->ai_addr,result->ai_addrlen) < 0) 
 	{
 		CloseTcpConnectedPortTLS(&TcpConnectedPort);
@@ -332,48 +332,98 @@ TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char *
 		return(NULL);
 	}
 
+	printf("4. connect TcpConnectedPort END\n");
+	// Configure the wolfSSL library
+	if (wolfSSL_Init() != WOLFSSL_SUCCESS) {
+		printf("Error initializing wolfSSL library.\n");
+		return(NULL);
+	}
+	printf("5. Configure the wolfSSL library END\n");
+	// Configure wolfSSL CTX functionality
+	WOLFSSL_METHOD* wolfSslMethod = wolfTLSv1_3_client_method();
+	if (wolfSslMethod == NULL) {
+		printf("Unable to allocate TLS v1.3 method.\n");
+		return(NULL);
+	}
+	printf("6. Configure wolfSSL CTX functionality END\n");
+
+	TcpConnectedPort->ctx = wolfSSL_CTX_new(wolfSslMethod);
+	if (TcpConnectedPort->ctx == NULL) {
+		printf("Unable get create SSL context.\n");
+		return(NULL);
+	}
+	printf("7. wolfSSL_CTX_new END\n");
+	/* Load client certificates into WOLFSSL_CTX */
+	int ret = 0;
+	if ((ret = wolfSSL_CTX_load_verify_locations(TcpConnectedPort->ctx, CERT_FILE, NULL)) != WOLFSSL_SUCCESS) {
+		printf("ERROR: failed to load %s, please check the file error = %d.\n", CERT_FILE, ret);
+		return(NULL);
+	}
+	printf("8. Load client certificates into WOLFSSL_CTX END\n");
+	// Create the SSL object
+	if ((TcpConnectedPort->ssl = wolfSSL_new(TcpConnectedPort->ctx)) == NULL) {
+		printf("Error creating final SSL object.\n");
+		return(NULL);
+	}
+	printf("9. Create the SSL object END\n");
+	// Attach the socket file descriptor to wolfSSL
+	if (wolfSSL_set_fd(TcpConnectedPort->ssl, TcpConnectedPort->ConnectedFd) != WOLFSSL_SUCCESS) {
+		printf("Error attaching socket fd to wolfSSL.\n");
+		return(NULL);
+	}
+	printf("10. Attach the socket file descriptor to wolfSSL END\n");
+	// Call Connect for incoming connections
+	if (wolfSSL_connect(TcpConnectedPort->ssl) != WOLFSSL_SUCCESS) {
+		printf("Error establishing TLS connection to host.\n");//호스트에 대한 TLS 연결을 설정하는 동안 오류가 발생했습니다.
+		return(NULL);
+	}
+	printf("11. Call Connect for incoming connections END\n");
+
 	freeaddrinfo(result);	 
 	
 	/*---------------------------------*/
 	/* Start of security */
 	/*---------------------------------*/
 	/* Create and initialize WOLFSSL_CTX */
-	if ((TcpConnectedPort->ctx = wolfSSL_CTX_new(wolfTLSv1_3_client_method())) == NULL) {
-		fprintf(stderr, "ERROR: failed to create WOLFSSL_CTX\n");
-		CloseTcpConnectedPortTLS(&TcpConnectedPort);
-		return(NULL);
-	}
+	if (false)
+	{
+		if ((TcpConnectedPort->ctx = wolfSSL_CTX_new(wolfTLSv1_3_client_method())) == NULL) {
+			fprintf(stderr, "ERROR: failed to create WOLFSSL_CTX\n");
+			CloseTcpConnectedPortTLS(&TcpConnectedPort);
+			return(NULL);
+		}
 
-	/* Load client certificates into WOLFSSL_CTX */
-	if (wolfSSL_CTX_load_verify_locations(TcpConnectedPort->ctx, CHAIN_CERT_FILE, NULL)
+		/* Load client certificates into WOLFSSL_CTX */
+		if (wolfSSL_CTX_load_verify_locations(TcpConnectedPort->ctx, CHAIN_CERT_FILE, NULL)
 			!= WOLFSSL_SUCCESS) {
-		fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
+			fprintf(stderr, "ERROR: failed to load %s, please check the file.\n",
 				CERT_FILE);
-		CloseTcpConnectedPortTLS(&TcpConnectedPort);
-		return(NULL);
-	}
+			CloseTcpConnectedPortTLS(&TcpConnectedPort);
+			return(NULL);
+		}
 
-	/* Create a WOLFSSL object */
-	if ((TcpConnectedPort->ssl = wolfSSL_new(TcpConnectedPort->ctx)) == NULL) {
-		fprintf(stderr, "ERROR: failed to create WOLFSSL object\n");
-		CloseTcpConnectedPortTLS(&TcpConnectedPort);
-		return(NULL);
-	}
+		/* Create a WOLFSSL object */
+		if ((TcpConnectedPort->ssl = wolfSSL_new(TcpConnectedPort->ctx)) == NULL) {
+			fprintf(stderr, "ERROR: failed to create WOLFSSL object\n");
+			CloseTcpConnectedPortTLS(&TcpConnectedPort);
+			return(NULL);
+		}
 
-	/* Attach wolfSSL to the socket */
-	if (wolfSSL_set_fd(TcpConnectedPort->ssl, TcpConnectedPort->ConnectedFd) != WOLFSSL_SUCCESS) {
-		fprintf(stderr, "ERROR: Failed to set the file descriptor\n");
-		CloseTcpConnectedPortTLS(&TcpConnectedPort);
-		return(NULL);
-	}
+		/* Attach wolfSSL to the socket */
+		if (wolfSSL_set_fd(TcpConnectedPort->ssl, TcpConnectedPort->ConnectedFd) != WOLFSSL_SUCCESS) {
+			fprintf(stderr, "ERROR: Failed to set the file descriptor\n");
+			CloseTcpConnectedPortTLS(&TcpConnectedPort);
+			return(NULL);
+		}
 
-	/* Connect to wolfSSL on the server side */
-	if (wolfSSL_connect(TcpConnectedPort->ssl) != WOLFSSL_SUCCESS) {
-		fprintf(stderr, "ERROR: failed to connect to wolfSSL\n");
-		CloseTcpConnectedPortTLS(&TcpConnectedPort);
-		return(NULL);
+		/* Connect to wolfSSL on the server side */
+		int re = wolfSSL_connect(TcpConnectedPort->ssl);
+		if (re != WOLFSSL_SUCCESS) {
+			fprintf(stderr, "ERROR: failed to connect to wolfSSL : %d\n", re);
+			CloseTcpConnectedPortTLS(&TcpConnectedPort);
+			return(NULL);
+		}
 	}
-
 
 	return(TcpConnectedPort);
 }
@@ -478,24 +528,24 @@ void CloseTcpConnectedPortTLS(TTcpConnectedPort **TcpConnectedPort)
 {
 	if ((*TcpConnectedPort)==NULL) return;
 
+	if ((*TcpConnectedPort)->ssl) {
+		wolfSSL_free((*TcpConnectedPort)->ssl);
+	}
+	if ((*TcpConnectedPort)->ctx) {
+		wolfSSL_CTX_free((*TcpConnectedPort)->ctx);
+	}
+
 	if ((*TcpConnectedPort)->ConnectedFd!=BAD_SOCKET_FD)  
 	{
 		CLOSE_SOCKET((*TcpConnectedPort)->ConnectedFd);
 		(*TcpConnectedPort)->ConnectedFd=BAD_SOCKET_FD;
-	}
-	
-	if((*TcpConnectedPort)->ssl) {
-		wolfSSL_free((*TcpConnectedPort)->ssl);
-	}
-	if((*TcpConnectedPort)->ctx) {
-		wolfSSL_CTX_free((*TcpConnectedPort)->ctx);
-	}
+	}	
 	delete (*TcpConnectedPort);
 	(*TcpConnectedPort)=NULL;
 #if  defined(_WIN32) || defined(_WIN64)
 	WSACleanup();
 #endif
-	wolfSSL_Cleanup();
+	//wolfSSL_Cleanup();
 }
 void CloseTcpConnectedPort(TTcpConnectedPort **TcpConnectedPort)
 {

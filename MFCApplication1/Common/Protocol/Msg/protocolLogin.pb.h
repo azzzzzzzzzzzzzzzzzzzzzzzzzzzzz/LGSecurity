@@ -47,7 +47,7 @@ struct TableStruct_protocolLogin_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[9]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -76,9 +76,6 @@ extern ServerSettingDefaultTypeInternal _ServerSetting_default_instance_;
 class TestMode_PlayVideo;
 struct TestMode_PlayVideoDefaultTypeInternal;
 extern TestMode_PlayVideoDefaultTypeInternal _TestMode_PlayVideo_default_instance_;
-class VideoFile;
-struct VideoFileDefaultTypeInternal;
-extern VideoFileDefaultTypeInternal _VideoFile_default_instance_;
 class VideoFileList;
 struct VideoFileListDefaultTypeInternal;
 extern VideoFileListDefaultTypeInternal _VideoFileList_default_instance_;
@@ -94,7 +91,6 @@ template<> ::protocol_msg::LearningMode_AddUser* Arena::CreateMaybeMessage<::pro
 template<> ::protocol_msg::LoginMsg* Arena::CreateMaybeMessage<::protocol_msg::LoginMsg>(Arena*);
 template<> ::protocol_msg::ServerSetting* Arena::CreateMaybeMessage<::protocol_msg::ServerSetting>(Arena*);
 template<> ::protocol_msg::TestMode_PlayVideo* Arena::CreateMaybeMessage<::protocol_msg::TestMode_PlayVideo>(Arena*);
-template<> ::protocol_msg::VideoFile* Arena::CreateMaybeMessage<::protocol_msg::VideoFile>(Arena*);
 template<> ::protocol_msg::VideoFileList* Arena::CreateMaybeMessage<::protocol_msg::VideoFileList>(Arena*);
 template<> ::protocol_msg::VideoFrame* Arena::CreateMaybeMessage<::protocol_msg::VideoFrame>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -669,154 +665,6 @@ class ServerSetting final :
 };
 // -------------------------------------------------------------------
 
-class VideoFile final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.VideoFile) */ {
- public:
-  inline VideoFile() : VideoFile(nullptr) {}
-  ~VideoFile() override;
-  explicit constexpr VideoFile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  VideoFile(const VideoFile& from);
-  VideoFile(VideoFile&& from) noexcept
-    : VideoFile() {
-    *this = ::std::move(from);
-  }
-
-  inline VideoFile& operator=(const VideoFile& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline VideoFile& operator=(VideoFile&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const VideoFile& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const VideoFile* internal_default_instance() {
-    return reinterpret_cast<const VideoFile*>(
-               &_VideoFile_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    3;
-
-  friend void swap(VideoFile& a, VideoFile& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(VideoFile* other) {
-    if (other == this) return;
-    if (GetOwningArena() == other->GetOwningArena()) {
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(VideoFile* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline VideoFile* New() const final {
-    return new VideoFile();
-  }
-
-  VideoFile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<VideoFile>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const VideoFile& from);
-  void MergeFrom(const VideoFile& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(VideoFile* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "protocol_msg.VideoFile";
-  }
-  protected:
-  explicit VideoFile(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  private:
-  static void ArenaDtor(void* object);
-  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kNameFieldNumber = 2,
-    kIndexFieldNumber = 1,
-  };
-  // string name = 2;
-  void clear_name();
-  const std::string& name() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_name();
-  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_name();
-  void set_allocated_name(std::string* name);
-  private:
-  const std::string& _internal_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
-  std::string* _internal_mutable_name();
-  public:
-
-  // int32 index = 1;
-  void clear_index();
-  ::PROTOBUF_NAMESPACE_ID::int32 index() const;
-  void set_index(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_index() const;
-  void _internal_set_index(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:protocol_msg.VideoFile)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
-  ::PROTOBUF_NAMESPACE_ID::int32 index_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  friend struct ::TableStruct_protocolLogin_2eproto;
-};
-// -------------------------------------------------------------------
-
 class VideoFileList final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.VideoFileList) */ {
  public:
@@ -861,7 +709,7 @@ class VideoFileList final :
                &_VideoFileList_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    3;
 
   friend void swap(VideoFileList& a, VideoFileList& b) {
     a.Swap(&b);
@@ -928,23 +776,29 @@ class VideoFileList final :
     kFilelistFieldNumber = 2,
     kNfilesFieldNumber = 1,
   };
-  // repeated .protocol_msg.VideoFile filelist = 2;
+  // repeated string filelist = 2;
   int filelist_size() const;
   private:
   int _internal_filelist_size() const;
   public:
   void clear_filelist();
-  ::protocol_msg::VideoFile* mutable_filelist(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >*
-      mutable_filelist();
+  const std::string& filelist(int index) const;
+  std::string* mutable_filelist(int index);
+  void set_filelist(int index, const std::string& value);
+  void set_filelist(int index, std::string&& value);
+  void set_filelist(int index, const char* value);
+  void set_filelist(int index, const char* value, size_t size);
+  std::string* add_filelist();
+  void add_filelist(const std::string& value);
+  void add_filelist(std::string&& value);
+  void add_filelist(const char* value);
+  void add_filelist(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& filelist() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_filelist();
   private:
-  const ::protocol_msg::VideoFile& _internal_filelist(int index) const;
-  ::protocol_msg::VideoFile* _internal_add_filelist();
+  const std::string& _internal_filelist(int index) const;
+  std::string* _internal_add_filelist();
   public:
-  const ::protocol_msg::VideoFile& filelist(int index) const;
-  ::protocol_msg::VideoFile* add_filelist();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >&
-      filelist() const;
 
   // int32 nfiles = 1;
   void clear_nfiles();
@@ -962,7 +816,7 @@ class VideoFileList final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile > filelist_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> filelist_;
   ::PROTOBUF_NAMESPACE_ID::int32 nfiles_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_protocolLogin_2eproto;
@@ -1013,7 +867,7 @@ class TestMode_PlayVideo final :
                &_TestMode_PlayVideo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    4;
 
   friend void swap(TestMode_PlayVideo& a, TestMode_PlayVideo& b) {
     a.Swap(&b);
@@ -1145,7 +999,7 @@ class LearningMode_AddUser final :
                &_LearningMode_AddUser_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    5;
 
   friend void swap(LearningMode_AddUser& a, LearningMode_AddUser& b) {
     a.Swap(&b);
@@ -1293,7 +1147,7 @@ class VideoFrame final :
                &_VideoFrame_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    6;
 
   friend void swap(VideoFrame& a, VideoFrame& b) {
     a.Swap(&b);
@@ -1441,7 +1295,7 @@ class DeleteUser final :
                &_DeleteUser_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    7;
 
   friend void swap(DeleteUser& a, DeleteUser& b) {
     a.Swap(&b);
@@ -1578,7 +1432,7 @@ class Ack final :
                &_Ack_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    8;
 
   friend void swap(Ack& a, Ack& b) {
     a.Swap(&b);
@@ -1856,75 +1710,6 @@ inline void ServerSetting::set_mode(::protocol_msg::ServerSetting_CtlMode value)
 
 // -------------------------------------------------------------------
 
-// VideoFile
-
-// int32 index = 1;
-inline void VideoFile::clear_index() {
-  index_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFile::_internal_index() const {
-  return index_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFile::index() const {
-  // @@protoc_insertion_point(field_get:protocol_msg.VideoFile.index)
-  return _internal_index();
-}
-inline void VideoFile::_internal_set_index(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  index_ = value;
-}
-inline void VideoFile::set_index(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_index(value);
-  // @@protoc_insertion_point(field_set:protocol_msg.VideoFile.index)
-}
-
-// string name = 2;
-inline void VideoFile::clear_name() {
-  name_.ClearToEmpty();
-}
-inline const std::string& VideoFile::name() const {
-  // @@protoc_insertion_point(field_get:protocol_msg.VideoFile.name)
-  return _internal_name();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void VideoFile::set_name(ArgT0&& arg0, ArgT... args) {
- 
- name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:protocol_msg.VideoFile.name)
-}
-inline std::string* VideoFile::mutable_name() {
-  // @@protoc_insertion_point(field_mutable:protocol_msg.VideoFile.name)
-  return _internal_mutable_name();
-}
-inline const std::string& VideoFile::_internal_name() const {
-  return name_.Get();
-}
-inline void VideoFile::_internal_set_name(const std::string& value) {
-  
-  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
-}
-inline std::string* VideoFile::_internal_mutable_name() {
-  
-  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
-}
-inline std::string* VideoFile::release_name() {
-  // @@protoc_insertion_point(field_release:protocol_msg.VideoFile.name)
-  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
-}
-inline void VideoFile::set_allocated_name(std::string* name) {
-  if (name != nullptr) {
-    
-  } else {
-    
-  }
-  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
-      GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set_allocated:protocol_msg.VideoFile.name)
-}
-
-// -------------------------------------------------------------------
-
 // VideoFileList
 
 // int32 nfiles = 1;
@@ -1947,7 +1732,7 @@ inline void VideoFileList::set_nfiles(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:protocol_msg.VideoFileList.nfiles)
 }
 
-// repeated .protocol_msg.VideoFile filelist = 2;
+// repeated string filelist = 2;
 inline int VideoFileList::_internal_filelist_size() const {
   return filelist_.size();
 }
@@ -1957,33 +1742,68 @@ inline int VideoFileList::filelist_size() const {
 inline void VideoFileList::clear_filelist() {
   filelist_.Clear();
 }
-inline ::protocol_msg::VideoFile* VideoFileList::mutable_filelist(int index) {
-  // @@protoc_insertion_point(field_mutable:protocol_msg.VideoFileList.filelist)
-  return filelist_.Mutable(index);
+inline std::string* VideoFileList::add_filelist() {
+  // @@protoc_insertion_point(field_add_mutable:protocol_msg.VideoFileList.filelist)
+  return _internal_add_filelist();
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >*
-VideoFileList::mutable_filelist() {
-  // @@protoc_insertion_point(field_mutable_list:protocol_msg.VideoFileList.filelist)
-  return &filelist_;
-}
-inline const ::protocol_msg::VideoFile& VideoFileList::_internal_filelist(int index) const {
+inline const std::string& VideoFileList::_internal_filelist(int index) const {
   return filelist_.Get(index);
 }
-inline const ::protocol_msg::VideoFile& VideoFileList::filelist(int index) const {
+inline const std::string& VideoFileList::filelist(int index) const {
   // @@protoc_insertion_point(field_get:protocol_msg.VideoFileList.filelist)
   return _internal_filelist(index);
 }
-inline ::protocol_msg::VideoFile* VideoFileList::_internal_add_filelist() {
+inline std::string* VideoFileList::mutable_filelist(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol_msg.VideoFileList.filelist)
+  return filelist_.Mutable(index);
+}
+inline void VideoFileList::set_filelist(int index, const std::string& value) {
+  // @@protoc_insertion_point(field_set:protocol_msg.VideoFileList.filelist)
+  filelist_.Mutable(index)->assign(value);
+}
+inline void VideoFileList::set_filelist(int index, std::string&& value) {
+  // @@protoc_insertion_point(field_set:protocol_msg.VideoFileList.filelist)
+  filelist_.Mutable(index)->assign(std::move(value));
+}
+inline void VideoFileList::set_filelist(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  filelist_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:protocol_msg.VideoFileList.filelist)
+}
+inline void VideoFileList::set_filelist(int index, const char* value, size_t size) {
+  filelist_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:protocol_msg.VideoFileList.filelist)
+}
+inline std::string* VideoFileList::_internal_add_filelist() {
   return filelist_.Add();
 }
-inline ::protocol_msg::VideoFile* VideoFileList::add_filelist() {
+inline void VideoFileList::add_filelist(const std::string& value) {
+  filelist_.Add()->assign(value);
   // @@protoc_insertion_point(field_add:protocol_msg.VideoFileList.filelist)
-  return _internal_add_filelist();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >&
+inline void VideoFileList::add_filelist(std::string&& value) {
+  filelist_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:protocol_msg.VideoFileList.filelist)
+}
+inline void VideoFileList::add_filelist(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  filelist_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:protocol_msg.VideoFileList.filelist)
+}
+inline void VideoFileList::add_filelist(const char* value, size_t size) {
+  filelist_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:protocol_msg.VideoFileList.filelist)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
 VideoFileList::filelist() const {
   // @@protoc_insertion_point(field_list:protocol_msg.VideoFileList.filelist)
   return filelist_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+VideoFileList::mutable_filelist() {
+  // @@protoc_insertion_point(field_mutable_list:protocol_msg.VideoFileList.filelist)
+  return &filelist_;
 }
 
 // -------------------------------------------------------------------
@@ -2244,8 +2064,6 @@ inline void Ack::set_arg(::PROTOBUF_NAMESPACE_ID::int32 value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
