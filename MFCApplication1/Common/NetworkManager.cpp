@@ -209,8 +209,20 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 				cv::imdecode(cv::Mat(img_pkt->msg.img_size(), 1, CV_8UC1, (uchar*)img_pkt->msg.img_data().c_str()), cv::IMREAD_COLOR, pImage);
 				// pImage->data = (uchar*)img_pkt->msg.img_data().c_str();
 				//if (!(*pImage).empty()) imshow("Server", *pImage); // If a valid image is received then display it
+
+				break;
 			}
-			break;
+			case MSG_VIDEO_FILE_LIST:
+			{
+				printf("MsgReq::MSG_IMAGE\n");
+				CVideoFileListProtocol* fileLIstPacket = dynamic_cast<CVideoFileListProtocol*>(pbase);
+				vector<string> fileList;
+				fileList.assign(fileLIstPacket->msg.filelist().begin(), fileLIstPacket->msg.filelist().end());
+				break;
+			}
+			default:
+				printf("Unknown msg type..\n");
+				break;
 			}
 		}
 		else {

@@ -28,14 +28,9 @@ message ServerSetting {
 	CtlMode Mode = 1;
 }
 
-message VideoFile {
-	int32 index = 1;
-	string name = 2;
-}
-
 message VideoFileList {
 	int32 nfiles=1;
-	repeated VideoFile filelist=2;
+	repeated string filelist=2;
 }
 
 message TestMode_PlayVideo {
