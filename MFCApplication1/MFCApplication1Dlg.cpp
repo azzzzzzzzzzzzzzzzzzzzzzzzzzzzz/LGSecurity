@@ -14,8 +14,6 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-#define DEFAULT_PORT "55555"
-#define DEFAULT_IP "192.168.0.223"
 #define DRAW_TIMER 1000
 #define ADD_TIMEOUT_TIMER 1001
 
@@ -76,8 +74,8 @@ UINT ThreadForRecvImg(LPVOID param)
 		string userId = "";
 		int imgSize = 0;
 		
-		bool retvalue;
-		retvalue = networkManager->readRecvImage(pMain->getMatImage(), msgType, timestamp, userId, imgSize);
+		bool retvalue = false;
+		retvalue = networkManager->get_a_packet(pMain->getMatImage());
 
 		if (retvalue && pMain->getPlayStatus())
 		{
@@ -373,14 +371,17 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	}
 
 	// KSS TODO
+	
 	if (false == mNetworkManager->openTcpConnection())
 	{
 		printf(" Fail OpenTcpConnection\n");
 		return;
 	}
+	
 
 	// send login ID, PW
 	//mNetworkManager->sendRequestLoginToServer(string(CT2CA(id)), string(CT2CA(pw)));
+	CLoginProtocol login(string(CT2CA(id)), string(CT2CA(pw)));
 
 	// receive login result
 
@@ -396,6 +397,9 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CControlModeProtocol mode(protocol_msg::ControlMode::RUN);
+	mNetworkManager->send_packet(mode);
+
 	m_bModeStart = !m_bModeStart;
 	m_btnStart.SetWindowText((m_bModeStart) ? CString("Stop") : CString("Start"));
 
@@ -605,7 +609,7 @@ void CMFCApplication1Dlg::clearVideoList()
 
 void CMFCApplication1Dlg::setModeRadioBtnStatus()
 {
-	m_radioLearning.EnableWindow((mNetworkManager->isAdmin() && !m_bModeStart)? TRUE : FALSE);
+	//m_radioLearning.EnableWindow((mNetworkManager->isAdmin() && !m_bModeStart)? TRUE : FALSE); TODO
 	m_radioRun.EnableWindow(!m_bModeStart);
 	m_radioTestRun.EnableWindow(!m_bModeStart);
 }

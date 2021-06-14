@@ -10,7 +10,6 @@
 
 #include "resource.h"		// 주 기호입니다.
 
-
 // CMFCApplication1App:
 // 이 클래스의 구현에 대해서는 MFCApplication1.cpp을(를) 참조하세요.
 //
@@ -23,7 +22,6 @@ public:
 // 재정의입니다.
 public:
 	virtual BOOL InitInstance();
-
 // 구현입니다.
 
 	DECLARE_MESSAGE_MAP()

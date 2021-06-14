@@ -192,10 +192,9 @@
     <ClInclude Include="Common\NetworkManager.h" />
     <ClInclude Include="Common\NetworkTCP.h" />
     <ClInclude Include="Common\NetworkUDP.h" />
-    <ClInclude Include="Common\Protocol\ImageProtocol.h" />
-    <ClInclude Include="Common\Protocol\LoginProtocol.h" />
-    <ClInclude Include="Common\Protocol\Msg\protocolImage.pb.h" />
+    <ClInclude Include="Common\Protocol\BaseProtocol.h" />
     <ClInclude Include="Common\Protocol\Msg\protocolLogin.pb.h" />
+    <ClInclude Include="Common\Protocol\MyProtocol.h" />
     <ClInclude Include="Common\Protocol\ProtocolManager.h" />
     <ClInclude Include="Common\SG_InputBox.h" />
     <ClInclude Include="Common\SG_InputBoxLib.h" />
@@ -214,10 +213,9 @@
     <ClCompile Include="Common\NetworkManager.cpp" />
     <ClCompile Include="Common\NetworkTCP.cpp" />
     <ClCompile Include="Common\NetworkUDP.cpp" />
-    <ClCompile Include="Common\Protocol\ImageProtocol.cpp" />
-    <ClCompile Include="Common\Protocol\LoginProtocol.cpp" />
-    <ClCompile Include="Common\Protocol\Msg\protocolImage.pb.cc" />
+    <ClCompile Include="Common\Protocol\BaseProtocol.cpp" />
     <ClCompile Include="Common\Protocol\Msg\protocolLogin.pb.cc" />
+    <ClCompile Include="Common\Protocol\MyProtocol.cpp" />
     <ClCompile Include="Common\Protocol\ProtocolManager.cpp" />
     <ClCompile Include="Common\SG_InputBox.cpp" />
     <ClCompile Include="Common\TcpSendRecvJpeg.cpp" />
@@ -236,7 +234,6 @@
     <ResourceCompile Include="MFCApplication1.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Common\Protocol\Msg\protocolImage.proto" />
     <None Include="Common\Protocol\Msg\protocolLogin.proto" />
     <None Include="res\MFCApplication1.rc2" />
   </ItemGroup>

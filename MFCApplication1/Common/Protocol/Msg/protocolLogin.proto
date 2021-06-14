@@ -3,9 +3,64 @@ syntax = "proto3";
 package protocol_msg;
 
 message LoginMsg {
-	int32 msg_type = 1;
-	int64 timestamp = 2;
-	string user_id = 3;
-	string password = 4;
-	int32 authority = 5;
+	string user_id = 1;
+	string password = 2;
+}
+
+message ControlMode {
+	enum OpMode {
+		RUN=0;
+		LEARNING=1;
+		TESTRUN=2;
+	}
+	OpMode Mode = 1;
+}
+
+message ServerSetting {
+	enum CtlMode {
+		INIT_USER_DB=0;
+		INIT_FACE_DB=1;
+		RESTART_SERVER=2;
+		SHUTDOWN_SERVER=3;
+		CAM_START=4;
+		CAM_STOP=5;
+	}
+	CtlMode Mode = 1;
+}
+
+message VideoFile {
+	int32 index = 1;
+	string name = 2;
+}
+
+message VideoFileList {
+	int32 nfiles=1;
+	repeated VideoFile filelist=2;
+}
+
+message TestMode_PlayVideo {
+	int32 index=1;
+}
+
+message LearningMode_AddUser {
+	int32 n_shots = 1;
+	string name = 2;
+}
+
+message VideoFrame {
+	int32 img_size = 1;
+	bytes img_data = 2;
+}
+
+message DeleteUser {
+	string name=1;
+}
+
+message Ack {
+	enum AckType {
+		ACK_OK=0;
+		ACK_NOK=1;
+	}
+	AckType acktype=1;
+	int32 arg=2;
 }

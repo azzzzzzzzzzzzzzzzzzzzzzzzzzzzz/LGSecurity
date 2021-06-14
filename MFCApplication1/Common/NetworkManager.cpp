@@ -7,18 +7,15 @@ NetworkManager::NetworkManager()
 ,mIsAdmin(false)
 , mMode(MODE_RUN)
 {
-	mProtocolManager = new ProtocolManager();
+	mProtocolManager = new CProtocolManager();
 }
 NetworkManager::~NetworkManager()
 {
 	CloseTcpConnectedPort(&mTcpConnectedPort);
 	delete mProtocolManager;
-	delete[] mLoginBuff;
-	delete[] mControlBuff;
-	delete[] mImageBuff;
-	delete[] mTcpBuff;
+	delete[] buff;
 }
-
+/*
 void NetworkManager::makeHeader(unsigned char* buff, unsigned int size)
 {
 	*buff = 'S';
@@ -28,20 +25,29 @@ void NetworkManager::makeHeader(unsigned char* buff, unsigned int size)
 
 	memcpy(buff + 4, &size, 4);
 }
+*/
 
 bool NetworkManager::openTcpConnection()
 {
-	if ((mTcpConnectedPort = OpenTcpConnection(DEFAULT_IP.c_str(), DEFAULT_PORT.c_str(), mIsSecure)) == NULL)
+	printf("is Secure? = %d\n", mIsSecure);
+	if (mIsSecure)
 	{
-		printf(" Fail OpenTcpConnection\n");
-		return false;
+		if ((mTcpConnectedPort = OpenTcpConnectionTLS(DEFAULT_IP.c_str(), DEFAULT_PORT_SECURE.c_str())) == NULL)
+			return false;
+		else
+			return true;
 	}
 	else
 	{
-		return true;
+		if ((mTcpConnectedPort = OpenTcpConnection(DEFAULT_IP.c_str(), DEFAULT_PORT_NON_SECURE.c_str())) == NULL)
+			return false;
+		else
+			return true;
 	}
+		
+	
 }
-
+/*
 size_t NetworkManager::sendRequestLoginToServer(const string id, const string pw)
 {
 	size_t msgSize = mProtocolManager->getLoginMsgToServer(&mLoginBuff[HEADER_SIZE], id, pw);
@@ -145,8 +151,8 @@ bool NetworkManager::readRecvImage(cv::Mat* Image, int& msgType, long long& time
 
 size_t NetworkManager::readDataTcp(bool isSecure)
 {
-	return (mIsSecure)? ReadDataTcpSecure(mTcpConnectedPort, mTcpBuff, TCP_BUFF_SIZE) : ReadDataTcp(mTcpConnectedPort, mTcpBuff, TCP_BUFF_SIZE);
-}
+	return (mIsSecure)? ReadDataTcpTLS(mTcpConnectedPort, mTcpBuff, TCP_BUFF_SIZE) : ReadDataTcp(mTcpConnectedPort, mTcpBuff, TCP_BUFF_SIZE);
+}*/
 
 
 void NetworkManager::setSecureMode(const bool mode)
@@ -181,3 +187,53 @@ UINT NetworkManager::getMode()
 
 
 
+bool NetworkManager::get_a_packet(Mat* pImage)
+{
+	ssize_t ret = 0;
+	if (mIsSecure)
+		ret = ReadDataTcpTLS(mTcpConnectedPort, buff, PACKET_MAX_BUFFER_SIZE);
+	else
+		ret = ReadDataTcp(mTcpConnectedPort, buff, PACKET_MAX_BUFFER_SIZE);
+	if (ret <= PACKET_MAX_BUFFER_SIZE && ret > 0)
+	{
+		CProtocolManager prot_man;
+		CBaseProtocol* pbase = dynamic_cast<CBaseProtocol*>(prot_man.parse_packet((MyPacket*)buff));
+		if (pbase) {
+			printf("Protocol type=%d\n", pbase->msg_type);
+			switch (pbase->msg_type)
+			{
+			case MSG_IMAGE:
+			{
+				printf("MsgReq::MSG_IMAGE\n");
+				CImageProtocol* img_pkt = dynamic_cast<CImageProtocol*>(pbase);
+				cv::imdecode(cv::Mat(img_pkt->msg.img_size(), 1, CV_8UC1, (uchar*)img_pkt->msg.img_data().c_str()), cv::IMREAD_COLOR, pImage);
+				// pImage->data = (uchar*)img_pkt->msg.img_data().c_str();
+				//if (!(*pImage).empty()) imshow("Server", *pImage); // If a valid image is received then display it
+			}
+			break;
+			}
+		}
+		else {
+			printf("parsing error..\n");
+		}
+	}
+	else {
+		return false;
+	}
+	return true;
+}
+
+bool NetworkManager::send_packet(CBaseProtocol& protocol)
+{
+	CProtocolManager proto_man;
+	size_t leng = 0;
+	unsigned char* pkt = proto_man.make_packet(protocol, &leng);
+	if (mIsSecure == true) {
+		WriteDataTcpTLS(mTcpConnectedPort, pkt, leng);
+	}
+	else {
+		WriteDataTcp(mTcpConnectedPort, pkt, leng);
+	}
+	delete pkt;
+	return true;
+}

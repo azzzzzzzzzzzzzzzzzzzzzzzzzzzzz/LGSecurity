@@ -19,12 +19,46 @@ static  std::vector<uchar> sendbuff;//buffer for coding
 //-----------------------------------------------------------------
 int TcpSendImageAsJpeg(TTcpConnectedPort * TcpConnectedPort,cv::Mat Image)
 {
+    if (!TcpConnectedPort) return -1;
     unsigned int imagesize;
     cv::imencode(".jpg", Image, sendbuff, param);
     imagesize=htonl(sendbuff.size()); // convert image size to network format
     if (WriteDataTcp(TcpConnectedPort,(unsigned char *)&imagesize,sizeof(imagesize))!=sizeof(imagesize))
     return(-1);
     return(WriteDataTcp(TcpConnectedPort,sendbuff.data(), sendbuff.size()));
+}
+
+int TcpSendImageAsJpegProtocol(TTcpConnectedPort* TcpConnectedPort, cv::Mat Image)
+{
+	// NetworkManager* networkManager = new NetworkManager();
+    
+	// cv::imencode(".jpg", Image, sendbuff, param);
+	
+	// networkManager->sendImageToClient(TcpConnectedPort, "lg", 1000, sendbuff.size(), (const char*)sendbuff.data());
+
+	// delete networkManager;
+	/*
+	ProtoBuff* msgBuff = new ProtoBuff();
+	msgBuff->setMsgType(1);
+	msgBuff->setUserId("lg");
+	msgBuff->setUserPw("lg_password");
+	msgBuff->setAuthority(2);
+	msgBuff->setOperationMode(3);
+	msgBuff->setNumOfImage(0);
+
+	unsigned int imagesize;
+    cv::imencode(".jpg", Image, sendbuff, param);
+
+	msgBuff->setImage(sendbuff.size(), (const char*)sendbuff.data());
+	unsigned char* serializedData = msgBuff->serializeToArray();
+	size_t serializedSize = msgBuff->getSize();
+
+	imagesize = htonl(serializedSize);
+    if (WriteDataTcp(TcpConnectedPort,(unsigned char *)&imagesize,sizeof(imagesize))!=sizeof(imagesize))
+    return(-1);
+    return(WriteDataTcp(TcpConnectedPort, serializedData, serializedSize));
+	*/
+	return 0;
 }
 
 //-----------------------------------------------------------------
@@ -35,6 +69,31 @@ int TcpSendImageAsJpeg(TTcpConnectedPort * TcpConnectedPort,cv::Mat Image)
 // jpeg image in side a TCP Stream on the specified TCP local port
 // returns true on success and false on failure
 //-----------------------------------------------------------------
+bool TcpRecvImageAsJpegTLS(TTcpConnectedPort * TcpConnectedPort,cv::Mat *Image)
+{
+  unsigned int imagesize;
+  unsigned char *buff;	/* receive buffer */   
+  
+  if (ReadDataTcpTLS(TcpConnectedPort,(unsigned char *)&imagesize,sizeof(imagesize))!=sizeof(imagesize)) return(false);
+  
+  imagesize=ntohl(imagesize); // convert image size to host format
+
+  if (imagesize<0) return false;
+
+  buff = new (std::nothrow) unsigned char [imagesize];
+  if (buff==NULL) return false;
+
+  if((ReadDataTcpTLS(TcpConnectedPort,buff,imagesize))==imagesize)
+   {
+     cv::imdecode(cv::Mat(imagesize,1,CV_8UC1,buff), cv::IMREAD_COLOR, Image );
+     delete [] buff;
+     if (!(*Image).empty()) return true;
+     else return false;
+   }
+   delete [] buff;
+   return false;
+}
+
 bool TcpRecvImageAsJpeg(TTcpConnectedPort * TcpConnectedPort,cv::Mat *Image)
 {
   unsigned int imagesize;

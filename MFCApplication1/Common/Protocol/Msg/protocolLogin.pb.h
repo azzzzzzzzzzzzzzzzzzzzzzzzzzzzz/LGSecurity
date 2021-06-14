@@ -30,6 +30,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -46,7 +47,7 @@ struct TableStruct_protocolLogin_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[1]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -54,15 +55,131 @@ struct TableStruct_protocolLogin_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_protocolLogin_2eproto;
 namespace protocol_msg {
+class Ack;
+struct AckDefaultTypeInternal;
+extern AckDefaultTypeInternal _Ack_default_instance_;
+class ControlMode;
+struct ControlModeDefaultTypeInternal;
+extern ControlModeDefaultTypeInternal _ControlMode_default_instance_;
+class DeleteUser;
+struct DeleteUserDefaultTypeInternal;
+extern DeleteUserDefaultTypeInternal _DeleteUser_default_instance_;
+class LearningMode_AddUser;
+struct LearningMode_AddUserDefaultTypeInternal;
+extern LearningMode_AddUserDefaultTypeInternal _LearningMode_AddUser_default_instance_;
 class LoginMsg;
 struct LoginMsgDefaultTypeInternal;
 extern LoginMsgDefaultTypeInternal _LoginMsg_default_instance_;
+class ServerSetting;
+struct ServerSettingDefaultTypeInternal;
+extern ServerSettingDefaultTypeInternal _ServerSetting_default_instance_;
+class TestMode_PlayVideo;
+struct TestMode_PlayVideoDefaultTypeInternal;
+extern TestMode_PlayVideoDefaultTypeInternal _TestMode_PlayVideo_default_instance_;
+class VideoFile;
+struct VideoFileDefaultTypeInternal;
+extern VideoFileDefaultTypeInternal _VideoFile_default_instance_;
+class VideoFileList;
+struct VideoFileListDefaultTypeInternal;
+extern VideoFileListDefaultTypeInternal _VideoFileList_default_instance_;
+class VideoFrame;
+struct VideoFrameDefaultTypeInternal;
+extern VideoFrameDefaultTypeInternal _VideoFrame_default_instance_;
 }  // namespace protocol_msg
 PROTOBUF_NAMESPACE_OPEN
+template<> ::protocol_msg::Ack* Arena::CreateMaybeMessage<::protocol_msg::Ack>(Arena*);
+template<> ::protocol_msg::ControlMode* Arena::CreateMaybeMessage<::protocol_msg::ControlMode>(Arena*);
+template<> ::protocol_msg::DeleteUser* Arena::CreateMaybeMessage<::protocol_msg::DeleteUser>(Arena*);
+template<> ::protocol_msg::LearningMode_AddUser* Arena::CreateMaybeMessage<::protocol_msg::LearningMode_AddUser>(Arena*);
 template<> ::protocol_msg::LoginMsg* Arena::CreateMaybeMessage<::protocol_msg::LoginMsg>(Arena*);
+template<> ::protocol_msg::ServerSetting* Arena::CreateMaybeMessage<::protocol_msg::ServerSetting>(Arena*);
+template<> ::protocol_msg::TestMode_PlayVideo* Arena::CreateMaybeMessage<::protocol_msg::TestMode_PlayVideo>(Arena*);
+template<> ::protocol_msg::VideoFile* Arena::CreateMaybeMessage<::protocol_msg::VideoFile>(Arena*);
+template<> ::protocol_msg::VideoFileList* Arena::CreateMaybeMessage<::protocol_msg::VideoFileList>(Arena*);
+template<> ::protocol_msg::VideoFrame* Arena::CreateMaybeMessage<::protocol_msg::VideoFrame>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace protocol_msg {
 
+enum ControlMode_OpMode : int {
+  ControlMode_OpMode_RUN = 0,
+  ControlMode_OpMode_LEARNING = 1,
+  ControlMode_OpMode_TESTRUN = 2,
+  ControlMode_OpMode_ControlMode_OpMode_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  ControlMode_OpMode_ControlMode_OpMode_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool ControlMode_OpMode_IsValid(int value);
+constexpr ControlMode_OpMode ControlMode_OpMode_OpMode_MIN = ControlMode_OpMode_RUN;
+constexpr ControlMode_OpMode ControlMode_OpMode_OpMode_MAX = ControlMode_OpMode_TESTRUN;
+constexpr int ControlMode_OpMode_OpMode_ARRAYSIZE = ControlMode_OpMode_OpMode_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ControlMode_OpMode_descriptor();
+template<typename T>
+inline const std::string& ControlMode_OpMode_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ControlMode_OpMode>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function ControlMode_OpMode_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    ControlMode_OpMode_descriptor(), enum_t_value);
+}
+inline bool ControlMode_OpMode_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ControlMode_OpMode* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ControlMode_OpMode>(
+    ControlMode_OpMode_descriptor(), name, value);
+}
+enum ServerSetting_CtlMode : int {
+  ServerSetting_CtlMode_INIT_USER_DB = 0,
+  ServerSetting_CtlMode_INIT_FACE_DB = 1,
+  ServerSetting_CtlMode_RESTART_SERVER = 2,
+  ServerSetting_CtlMode_SHUTDOWN_SERVER = 3,
+  ServerSetting_CtlMode_CAM_START = 4,
+  ServerSetting_CtlMode_CAM_STOP = 5,
+  ServerSetting_CtlMode_ServerSetting_CtlMode_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  ServerSetting_CtlMode_ServerSetting_CtlMode_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool ServerSetting_CtlMode_IsValid(int value);
+constexpr ServerSetting_CtlMode ServerSetting_CtlMode_CtlMode_MIN = ServerSetting_CtlMode_INIT_USER_DB;
+constexpr ServerSetting_CtlMode ServerSetting_CtlMode_CtlMode_MAX = ServerSetting_CtlMode_CAM_STOP;
+constexpr int ServerSetting_CtlMode_CtlMode_ARRAYSIZE = ServerSetting_CtlMode_CtlMode_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ServerSetting_CtlMode_descriptor();
+template<typename T>
+inline const std::string& ServerSetting_CtlMode_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ServerSetting_CtlMode>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function ServerSetting_CtlMode_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    ServerSetting_CtlMode_descriptor(), enum_t_value);
+}
+inline bool ServerSetting_CtlMode_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ServerSetting_CtlMode* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ServerSetting_CtlMode>(
+    ServerSetting_CtlMode_descriptor(), name, value);
+}
+enum Ack_AckType : int {
+  Ack_AckType_ACK_OK = 0,
+  Ack_AckType_ACK_NOK = 1,
+  Ack_AckType_Ack_AckType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  Ack_AckType_Ack_AckType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool Ack_AckType_IsValid(int value);
+constexpr Ack_AckType Ack_AckType_AckType_MIN = Ack_AckType_ACK_OK;
+constexpr Ack_AckType Ack_AckType_AckType_MAX = Ack_AckType_ACK_NOK;
+constexpr int Ack_AckType_AckType_ARRAYSIZE = Ack_AckType_AckType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Ack_AckType_descriptor();
+template<typename T>
+inline const std::string& Ack_AckType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, Ack_AckType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function Ack_AckType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    Ack_AckType_descriptor(), enum_t_value);
+}
+inline bool Ack_AckType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, Ack_AckType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Ack_AckType>(
+    Ack_AckType_descriptor(), name, value);
+}
 // ===================================================================
 
 class LoginMsg final :
@@ -173,13 +290,10 @@ class LoginMsg final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kUserIdFieldNumber = 3,
-    kPasswordFieldNumber = 4,
-    kTimestampFieldNumber = 2,
-    kMsgTypeFieldNumber = 1,
-    kAuthorityFieldNumber = 5,
+    kUserIdFieldNumber = 1,
+    kPasswordFieldNumber = 2,
   };
-  // string user_id = 3;
+  // string user_id = 1;
   void clear_user_id();
   const std::string& user_id() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -193,7 +307,7 @@ class LoginMsg final :
   std::string* _internal_mutable_user_id();
   public:
 
-  // string password = 4;
+  // string password = 2;
   void clear_password();
   const std::string& password() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
@@ -207,33 +321,6 @@ class LoginMsg final :
   std::string* _internal_mutable_password();
   public:
 
-  // int64 timestamp = 2;
-  void clear_timestamp();
-  ::PROTOBUF_NAMESPACE_ID::int64 timestamp() const;
-  void set_timestamp(::PROTOBUF_NAMESPACE_ID::int64 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int64 _internal_timestamp() const;
-  void _internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::int64 value);
-  public:
-
-  // int32 msg_type = 1;
-  void clear_msg_type();
-  ::PROTOBUF_NAMESPACE_ID::int32 msg_type() const;
-  void set_msg_type(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_msg_type() const;
-  void _internal_set_msg_type(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // int32 authority = 5;
-  void clear_authority();
-  ::PROTOBUF_NAMESPACE_ID::int32 authority() const;
-  void set_authority(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_authority() const;
-  void _internal_set_authority(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
   // @@protoc_insertion_point(class_scope:protocol_msg.LoginMsg)
  private:
   class _Internal;
@@ -243,9 +330,1378 @@ class LoginMsg final :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr user_id_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr password_;
-  ::PROTOBUF_NAMESPACE_ID::int64 timestamp_;
-  ::PROTOBUF_NAMESPACE_ID::int32 msg_type_;
-  ::PROTOBUF_NAMESPACE_ID::int32 authority_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ControlMode final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.ControlMode) */ {
+ public:
+  inline ControlMode() : ControlMode(nullptr) {}
+  ~ControlMode() override;
+  explicit constexpr ControlMode(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ControlMode(const ControlMode& from);
+  ControlMode(ControlMode&& from) noexcept
+    : ControlMode() {
+    *this = ::std::move(from);
+  }
+
+  inline ControlMode& operator=(const ControlMode& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ControlMode& operator=(ControlMode&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ControlMode& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ControlMode* internal_default_instance() {
+    return reinterpret_cast<const ControlMode*>(
+               &_ControlMode_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(ControlMode& a, ControlMode& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ControlMode* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ControlMode* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ControlMode* New() const final {
+    return new ControlMode();
+  }
+
+  ControlMode* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ControlMode>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const ControlMode& from);
+  void MergeFrom(const ControlMode& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ControlMode* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.ControlMode";
+  }
+  protected:
+  explicit ControlMode(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ControlMode_OpMode OpMode;
+  static constexpr OpMode RUN =
+    ControlMode_OpMode_RUN;
+  static constexpr OpMode LEARNING =
+    ControlMode_OpMode_LEARNING;
+  static constexpr OpMode TESTRUN =
+    ControlMode_OpMode_TESTRUN;
+  static inline bool OpMode_IsValid(int value) {
+    return ControlMode_OpMode_IsValid(value);
+  }
+  static constexpr OpMode OpMode_MIN =
+    ControlMode_OpMode_OpMode_MIN;
+  static constexpr OpMode OpMode_MAX =
+    ControlMode_OpMode_OpMode_MAX;
+  static constexpr int OpMode_ARRAYSIZE =
+    ControlMode_OpMode_OpMode_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  OpMode_descriptor() {
+    return ControlMode_OpMode_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& OpMode_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, OpMode>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function OpMode_Name.");
+    return ControlMode_OpMode_Name(enum_t_value);
+  }
+  static inline bool OpMode_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      OpMode* value) {
+    return ControlMode_OpMode_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kModeFieldNumber = 1,
+  };
+  // .protocol_msg.ControlMode.OpMode Mode = 1;
+  void clear_mode();
+  ::protocol_msg::ControlMode_OpMode mode() const;
+  void set_mode(::protocol_msg::ControlMode_OpMode value);
+  private:
+  ::protocol_msg::ControlMode_OpMode _internal_mode() const;
+  void _internal_set_mode(::protocol_msg::ControlMode_OpMode value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.ControlMode)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  int mode_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class ServerSetting final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.ServerSetting) */ {
+ public:
+  inline ServerSetting() : ServerSetting(nullptr) {}
+  ~ServerSetting() override;
+  explicit constexpr ServerSetting(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ServerSetting(const ServerSetting& from);
+  ServerSetting(ServerSetting&& from) noexcept
+    : ServerSetting() {
+    *this = ::std::move(from);
+  }
+
+  inline ServerSetting& operator=(const ServerSetting& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ServerSetting& operator=(ServerSetting&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ServerSetting& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ServerSetting* internal_default_instance() {
+    return reinterpret_cast<const ServerSetting*>(
+               &_ServerSetting_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(ServerSetting& a, ServerSetting& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ServerSetting* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ServerSetting* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ServerSetting* New() const final {
+    return new ServerSetting();
+  }
+
+  ServerSetting* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ServerSetting>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const ServerSetting& from);
+  void MergeFrom(const ServerSetting& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ServerSetting* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.ServerSetting";
+  }
+  protected:
+  explicit ServerSetting(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef ServerSetting_CtlMode CtlMode;
+  static constexpr CtlMode INIT_USER_DB =
+    ServerSetting_CtlMode_INIT_USER_DB;
+  static constexpr CtlMode INIT_FACE_DB =
+    ServerSetting_CtlMode_INIT_FACE_DB;
+  static constexpr CtlMode RESTART_SERVER =
+    ServerSetting_CtlMode_RESTART_SERVER;
+  static constexpr CtlMode SHUTDOWN_SERVER =
+    ServerSetting_CtlMode_SHUTDOWN_SERVER;
+  static constexpr CtlMode CAM_START =
+    ServerSetting_CtlMode_CAM_START;
+  static constexpr CtlMode CAM_STOP =
+    ServerSetting_CtlMode_CAM_STOP;
+  static inline bool CtlMode_IsValid(int value) {
+    return ServerSetting_CtlMode_IsValid(value);
+  }
+  static constexpr CtlMode CtlMode_MIN =
+    ServerSetting_CtlMode_CtlMode_MIN;
+  static constexpr CtlMode CtlMode_MAX =
+    ServerSetting_CtlMode_CtlMode_MAX;
+  static constexpr int CtlMode_ARRAYSIZE =
+    ServerSetting_CtlMode_CtlMode_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  CtlMode_descriptor() {
+    return ServerSetting_CtlMode_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& CtlMode_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, CtlMode>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function CtlMode_Name.");
+    return ServerSetting_CtlMode_Name(enum_t_value);
+  }
+  static inline bool CtlMode_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      CtlMode* value) {
+    return ServerSetting_CtlMode_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kModeFieldNumber = 1,
+  };
+  // .protocol_msg.ServerSetting.CtlMode Mode = 1;
+  void clear_mode();
+  ::protocol_msg::ServerSetting_CtlMode mode() const;
+  void set_mode(::protocol_msg::ServerSetting_CtlMode value);
+  private:
+  ::protocol_msg::ServerSetting_CtlMode _internal_mode() const;
+  void _internal_set_mode(::protocol_msg::ServerSetting_CtlMode value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.ServerSetting)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  int mode_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class VideoFile final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.VideoFile) */ {
+ public:
+  inline VideoFile() : VideoFile(nullptr) {}
+  ~VideoFile() override;
+  explicit constexpr VideoFile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  VideoFile(const VideoFile& from);
+  VideoFile(VideoFile&& from) noexcept
+    : VideoFile() {
+    *this = ::std::move(from);
+  }
+
+  inline VideoFile& operator=(const VideoFile& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline VideoFile& operator=(VideoFile&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const VideoFile& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const VideoFile* internal_default_instance() {
+    return reinterpret_cast<const VideoFile*>(
+               &_VideoFile_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(VideoFile& a, VideoFile& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(VideoFile* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(VideoFile* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline VideoFile* New() const final {
+    return new VideoFile();
+  }
+
+  VideoFile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<VideoFile>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const VideoFile& from);
+  void MergeFrom(const VideoFile& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(VideoFile* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.VideoFile";
+  }
+  protected:
+  explicit VideoFile(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 2,
+    kIndexFieldNumber = 1,
+  };
+  // string name = 2;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // int32 index = 1;
+  void clear_index();
+  ::PROTOBUF_NAMESPACE_ID::int32 index() const;
+  void set_index(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_index() const;
+  void _internal_set_index(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.VideoFile)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+  ::PROTOBUF_NAMESPACE_ID::int32 index_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class VideoFileList final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.VideoFileList) */ {
+ public:
+  inline VideoFileList() : VideoFileList(nullptr) {}
+  ~VideoFileList() override;
+  explicit constexpr VideoFileList(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  VideoFileList(const VideoFileList& from);
+  VideoFileList(VideoFileList&& from) noexcept
+    : VideoFileList() {
+    *this = ::std::move(from);
+  }
+
+  inline VideoFileList& operator=(const VideoFileList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline VideoFileList& operator=(VideoFileList&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const VideoFileList& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const VideoFileList* internal_default_instance() {
+    return reinterpret_cast<const VideoFileList*>(
+               &_VideoFileList_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(VideoFileList& a, VideoFileList& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(VideoFileList* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(VideoFileList* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline VideoFileList* New() const final {
+    return new VideoFileList();
+  }
+
+  VideoFileList* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<VideoFileList>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const VideoFileList& from);
+  void MergeFrom(const VideoFileList& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(VideoFileList* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.VideoFileList";
+  }
+  protected:
+  explicit VideoFileList(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFilelistFieldNumber = 2,
+    kNfilesFieldNumber = 1,
+  };
+  // repeated .protocol_msg.VideoFile filelist = 2;
+  int filelist_size() const;
+  private:
+  int _internal_filelist_size() const;
+  public:
+  void clear_filelist();
+  ::protocol_msg::VideoFile* mutable_filelist(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >*
+      mutable_filelist();
+  private:
+  const ::protocol_msg::VideoFile& _internal_filelist(int index) const;
+  ::protocol_msg::VideoFile* _internal_add_filelist();
+  public:
+  const ::protocol_msg::VideoFile& filelist(int index) const;
+  ::protocol_msg::VideoFile* add_filelist();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >&
+      filelist() const;
+
+  // int32 nfiles = 1;
+  void clear_nfiles();
+  ::PROTOBUF_NAMESPACE_ID::int32 nfiles() const;
+  void set_nfiles(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_nfiles() const;
+  void _internal_set_nfiles(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.VideoFileList)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile > filelist_;
+  ::PROTOBUF_NAMESPACE_ID::int32 nfiles_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class TestMode_PlayVideo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.TestMode_PlayVideo) */ {
+ public:
+  inline TestMode_PlayVideo() : TestMode_PlayVideo(nullptr) {}
+  ~TestMode_PlayVideo() override;
+  explicit constexpr TestMode_PlayVideo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  TestMode_PlayVideo(const TestMode_PlayVideo& from);
+  TestMode_PlayVideo(TestMode_PlayVideo&& from) noexcept
+    : TestMode_PlayVideo() {
+    *this = ::std::move(from);
+  }
+
+  inline TestMode_PlayVideo& operator=(const TestMode_PlayVideo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline TestMode_PlayVideo& operator=(TestMode_PlayVideo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const TestMode_PlayVideo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const TestMode_PlayVideo* internal_default_instance() {
+    return reinterpret_cast<const TestMode_PlayVideo*>(
+               &_TestMode_PlayVideo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(TestMode_PlayVideo& a, TestMode_PlayVideo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(TestMode_PlayVideo* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(TestMode_PlayVideo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline TestMode_PlayVideo* New() const final {
+    return new TestMode_PlayVideo();
+  }
+
+  TestMode_PlayVideo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<TestMode_PlayVideo>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const TestMode_PlayVideo& from);
+  void MergeFrom(const TestMode_PlayVideo& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(TestMode_PlayVideo* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.TestMode_PlayVideo";
+  }
+  protected:
+  explicit TestMode_PlayVideo(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIndexFieldNumber = 1,
+  };
+  // int32 index = 1;
+  void clear_index();
+  ::PROTOBUF_NAMESPACE_ID::int32 index() const;
+  void set_index(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_index() const;
+  void _internal_set_index(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.TestMode_PlayVideo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 index_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class LearningMode_AddUser final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.LearningMode_AddUser) */ {
+ public:
+  inline LearningMode_AddUser() : LearningMode_AddUser(nullptr) {}
+  ~LearningMode_AddUser() override;
+  explicit constexpr LearningMode_AddUser(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  LearningMode_AddUser(const LearningMode_AddUser& from);
+  LearningMode_AddUser(LearningMode_AddUser&& from) noexcept
+    : LearningMode_AddUser() {
+    *this = ::std::move(from);
+  }
+
+  inline LearningMode_AddUser& operator=(const LearningMode_AddUser& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline LearningMode_AddUser& operator=(LearningMode_AddUser&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const LearningMode_AddUser& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const LearningMode_AddUser* internal_default_instance() {
+    return reinterpret_cast<const LearningMode_AddUser*>(
+               &_LearningMode_AddUser_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  friend void swap(LearningMode_AddUser& a, LearningMode_AddUser& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(LearningMode_AddUser* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(LearningMode_AddUser* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline LearningMode_AddUser* New() const final {
+    return new LearningMode_AddUser();
+  }
+
+  LearningMode_AddUser* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<LearningMode_AddUser>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const LearningMode_AddUser& from);
+  void MergeFrom(const LearningMode_AddUser& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(LearningMode_AddUser* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.LearningMode_AddUser";
+  }
+  protected:
+  explicit LearningMode_AddUser(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 2,
+    kNShotsFieldNumber = 1,
+  };
+  // string name = 2;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // int32 n_shots = 1;
+  void clear_n_shots();
+  ::PROTOBUF_NAMESPACE_ID::int32 n_shots() const;
+  void set_n_shots(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_n_shots() const;
+  void _internal_set_n_shots(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.LearningMode_AddUser)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+  ::PROTOBUF_NAMESPACE_ID::int32 n_shots_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class VideoFrame final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.VideoFrame) */ {
+ public:
+  inline VideoFrame() : VideoFrame(nullptr) {}
+  ~VideoFrame() override;
+  explicit constexpr VideoFrame(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  VideoFrame(const VideoFrame& from);
+  VideoFrame(VideoFrame&& from) noexcept
+    : VideoFrame() {
+    *this = ::std::move(from);
+  }
+
+  inline VideoFrame& operator=(const VideoFrame& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline VideoFrame& operator=(VideoFrame&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const VideoFrame& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const VideoFrame* internal_default_instance() {
+    return reinterpret_cast<const VideoFrame*>(
+               &_VideoFrame_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(VideoFrame& a, VideoFrame& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(VideoFrame* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(VideoFrame* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline VideoFrame* New() const final {
+    return new VideoFrame();
+  }
+
+  VideoFrame* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<VideoFrame>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const VideoFrame& from);
+  void MergeFrom(const VideoFrame& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(VideoFrame* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.VideoFrame";
+  }
+  protected:
+  explicit VideoFrame(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kImgDataFieldNumber = 2,
+    kImgSizeFieldNumber = 1,
+  };
+  // bytes img_data = 2;
+  void clear_img_data();
+  const std::string& img_data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_img_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_img_data();
+  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_img_data();
+  void set_allocated_img_data(std::string* img_data);
+  private:
+  const std::string& _internal_img_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_img_data(const std::string& value);
+  std::string* _internal_mutable_img_data();
+  public:
+
+  // int32 img_size = 1;
+  void clear_img_size();
+  ::PROTOBUF_NAMESPACE_ID::int32 img_size() const;
+  void set_img_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_img_size() const;
+  void _internal_set_img_size(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.VideoFrame)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr img_data_;
+  ::PROTOBUF_NAMESPACE_ID::int32 img_size_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class DeleteUser final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.DeleteUser) */ {
+ public:
+  inline DeleteUser() : DeleteUser(nullptr) {}
+  ~DeleteUser() override;
+  explicit constexpr DeleteUser(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  DeleteUser(const DeleteUser& from);
+  DeleteUser(DeleteUser&& from) noexcept
+    : DeleteUser() {
+    *this = ::std::move(from);
+  }
+
+  inline DeleteUser& operator=(const DeleteUser& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline DeleteUser& operator=(DeleteUser&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const DeleteUser& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const DeleteUser* internal_default_instance() {
+    return reinterpret_cast<const DeleteUser*>(
+               &_DeleteUser_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(DeleteUser& a, DeleteUser& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(DeleteUser* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(DeleteUser* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline DeleteUser* New() const final {
+    return new DeleteUser();
+  }
+
+  DeleteUser* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<DeleteUser>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const DeleteUser& from);
+  void MergeFrom(const DeleteUser& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(DeleteUser* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.DeleteUser";
+  }
+  protected:
+  explicit DeleteUser(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+  };
+  // string name = 1;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.DeleteUser)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_protocolLogin_2eproto;
+};
+// -------------------------------------------------------------------
+
+class Ack final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:protocol_msg.Ack) */ {
+ public:
+  inline Ack() : Ack(nullptr) {}
+  ~Ack() override;
+  explicit constexpr Ack(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  Ack(const Ack& from);
+  Ack(Ack&& from) noexcept
+    : Ack() {
+    *this = ::std::move(from);
+  }
+
+  inline Ack& operator=(const Ack& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Ack& operator=(Ack&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Ack& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Ack* internal_default_instance() {
+    return reinterpret_cast<const Ack*>(
+               &_Ack_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(Ack& a, Ack& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Ack* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Ack* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Ack* New() const final {
+    return new Ack();
+  }
+
+  Ack* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<Ack>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const Ack& from);
+  void MergeFrom(const Ack& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Ack* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "protocol_msg.Ack";
+  }
+  protected:
+  explicit Ack(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef Ack_AckType AckType;
+  static constexpr AckType ACK_OK =
+    Ack_AckType_ACK_OK;
+  static constexpr AckType ACK_NOK =
+    Ack_AckType_ACK_NOK;
+  static inline bool AckType_IsValid(int value) {
+    return Ack_AckType_IsValid(value);
+  }
+  static constexpr AckType AckType_MIN =
+    Ack_AckType_AckType_MIN;
+  static constexpr AckType AckType_MAX =
+    Ack_AckType_AckType_MAX;
+  static constexpr int AckType_ARRAYSIZE =
+    Ack_AckType_AckType_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  AckType_descriptor() {
+    return Ack_AckType_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& AckType_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, AckType>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function AckType_Name.");
+    return Ack_AckType_Name(enum_t_value);
+  }
+  static inline bool AckType_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      AckType* value) {
+    return Ack_AckType_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kAcktypeFieldNumber = 1,
+    kArgFieldNumber = 2,
+  };
+  // .protocol_msg.Ack.AckType acktype = 1;
+  void clear_acktype();
+  ::protocol_msg::Ack_AckType acktype() const;
+  void set_acktype(::protocol_msg::Ack_AckType value);
+  private:
+  ::protocol_msg::Ack_AckType _internal_acktype() const;
+  void _internal_set_acktype(::protocol_msg::Ack_AckType value);
+  public:
+
+  // int32 arg = 2;
+  void clear_arg();
+  ::PROTOBUF_NAMESPACE_ID::int32 arg() const;
+  void set_arg(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_arg() const;
+  void _internal_set_arg(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:protocol_msg.Ack)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  int acktype_;
+  ::PROTOBUF_NAMESPACE_ID::int32 arg_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_protocolLogin_2eproto;
 };
@@ -260,47 +1716,7 @@ class LoginMsg final :
 #endif  // __GNUC__
 // LoginMsg
 
-// int32 msg_type = 1;
-inline void LoginMsg::clear_msg_type() {
-  msg_type_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 LoginMsg::_internal_msg_type() const {
-  return msg_type_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 LoginMsg::msg_type() const {
-  // @@protoc_insertion_point(field_get:protocol_msg.LoginMsg.msg_type)
-  return _internal_msg_type();
-}
-inline void LoginMsg::_internal_set_msg_type(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  msg_type_ = value;
-}
-inline void LoginMsg::set_msg_type(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_msg_type(value);
-  // @@protoc_insertion_point(field_set:protocol_msg.LoginMsg.msg_type)
-}
-
-// int64 timestamp = 2;
-inline void LoginMsg::clear_timestamp() {
-  timestamp_ = int64_t{0};
-}
-inline ::PROTOBUF_NAMESPACE_ID::int64 LoginMsg::_internal_timestamp() const {
-  return timestamp_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int64 LoginMsg::timestamp() const {
-  // @@protoc_insertion_point(field_get:protocol_msg.LoginMsg.timestamp)
-  return _internal_timestamp();
-}
-inline void LoginMsg::_internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  
-  timestamp_ = value;
-}
-inline void LoginMsg::set_timestamp(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  _internal_set_timestamp(value);
-  // @@protoc_insertion_point(field_set:protocol_msg.LoginMsg.timestamp)
-}
-
-// string user_id = 3;
+// string user_id = 1;
 inline void LoginMsg::clear_user_id() {
   user_id_.ClearToEmpty();
 }
@@ -345,7 +1761,7 @@ inline void LoginMsg::set_allocated_user_id(std::string* user_id) {
   // @@protoc_insertion_point(field_set_allocated:protocol_msg.LoginMsg.user_id)
 }
 
-// string password = 4;
+// string password = 2;
 inline void LoginMsg::clear_password() {
   password_.ClearToEmpty();
 }
@@ -390,33 +1806,486 @@ inline void LoginMsg::set_allocated_password(std::string* password) {
   // @@protoc_insertion_point(field_set_allocated:protocol_msg.LoginMsg.password)
 }
 
-// int32 authority = 5;
-inline void LoginMsg::clear_authority() {
-  authority_ = 0;
+// -------------------------------------------------------------------
+
+// ControlMode
+
+// .protocol_msg.ControlMode.OpMode Mode = 1;
+inline void ControlMode::clear_mode() {
+  mode_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 LoginMsg::_internal_authority() const {
-  return authority_;
+inline ::protocol_msg::ControlMode_OpMode ControlMode::_internal_mode() const {
+  return static_cast< ::protocol_msg::ControlMode_OpMode >(mode_);
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 LoginMsg::authority() const {
-  // @@protoc_insertion_point(field_get:protocol_msg.LoginMsg.authority)
-  return _internal_authority();
+inline ::protocol_msg::ControlMode_OpMode ControlMode::mode() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.ControlMode.Mode)
+  return _internal_mode();
 }
-inline void LoginMsg::_internal_set_authority(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void ControlMode::_internal_set_mode(::protocol_msg::ControlMode_OpMode value) {
   
-  authority_ = value;
+  mode_ = value;
 }
-inline void LoginMsg::set_authority(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_authority(value);
-  // @@protoc_insertion_point(field_set:protocol_msg.LoginMsg.authority)
+inline void ControlMode::set_mode(::protocol_msg::ControlMode_OpMode value) {
+  _internal_set_mode(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.ControlMode.Mode)
+}
+
+// -------------------------------------------------------------------
+
+// ServerSetting
+
+// .protocol_msg.ServerSetting.CtlMode Mode = 1;
+inline void ServerSetting::clear_mode() {
+  mode_ = 0;
+}
+inline ::protocol_msg::ServerSetting_CtlMode ServerSetting::_internal_mode() const {
+  return static_cast< ::protocol_msg::ServerSetting_CtlMode >(mode_);
+}
+inline ::protocol_msg::ServerSetting_CtlMode ServerSetting::mode() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.ServerSetting.Mode)
+  return _internal_mode();
+}
+inline void ServerSetting::_internal_set_mode(::protocol_msg::ServerSetting_CtlMode value) {
+  
+  mode_ = value;
+}
+inline void ServerSetting::set_mode(::protocol_msg::ServerSetting_CtlMode value) {
+  _internal_set_mode(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.ServerSetting.Mode)
+}
+
+// -------------------------------------------------------------------
+
+// VideoFile
+
+// int32 index = 1;
+inline void VideoFile::clear_index() {
+  index_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFile::_internal_index() const {
+  return index_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFile::index() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.VideoFile.index)
+  return _internal_index();
+}
+inline void VideoFile::_internal_set_index(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  index_ = value;
+}
+inline void VideoFile::set_index(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_index(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.VideoFile.index)
+}
+
+// string name = 2;
+inline void VideoFile::clear_name() {
+  name_.ClearToEmpty();
+}
+inline const std::string& VideoFile::name() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.VideoFile.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void VideoFile::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:protocol_msg.VideoFile.name)
+}
+inline std::string* VideoFile::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:protocol_msg.VideoFile.name)
+  return _internal_mutable_name();
+}
+inline const std::string& VideoFile::_internal_name() const {
+  return name_.Get();
+}
+inline void VideoFile::_internal_set_name(const std::string& value) {
+  
+  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* VideoFile::_internal_mutable_name() {
+  
+  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* VideoFile::release_name() {
+  // @@protoc_insertion_point(field_release:protocol_msg.VideoFile.name)
+  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void VideoFile::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:protocol_msg.VideoFile.name)
+}
+
+// -------------------------------------------------------------------
+
+// VideoFileList
+
+// int32 nfiles = 1;
+inline void VideoFileList::clear_nfiles() {
+  nfiles_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFileList::_internal_nfiles() const {
+  return nfiles_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFileList::nfiles() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.VideoFileList.nfiles)
+  return _internal_nfiles();
+}
+inline void VideoFileList::_internal_set_nfiles(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  nfiles_ = value;
+}
+inline void VideoFileList::set_nfiles(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_nfiles(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.VideoFileList.nfiles)
+}
+
+// repeated .protocol_msg.VideoFile filelist = 2;
+inline int VideoFileList::_internal_filelist_size() const {
+  return filelist_.size();
+}
+inline int VideoFileList::filelist_size() const {
+  return _internal_filelist_size();
+}
+inline void VideoFileList::clear_filelist() {
+  filelist_.Clear();
+}
+inline ::protocol_msg::VideoFile* VideoFileList::mutable_filelist(int index) {
+  // @@protoc_insertion_point(field_mutable:protocol_msg.VideoFileList.filelist)
+  return filelist_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >*
+VideoFileList::mutable_filelist() {
+  // @@protoc_insertion_point(field_mutable_list:protocol_msg.VideoFileList.filelist)
+  return &filelist_;
+}
+inline const ::protocol_msg::VideoFile& VideoFileList::_internal_filelist(int index) const {
+  return filelist_.Get(index);
+}
+inline const ::protocol_msg::VideoFile& VideoFileList::filelist(int index) const {
+  // @@protoc_insertion_point(field_get:protocol_msg.VideoFileList.filelist)
+  return _internal_filelist(index);
+}
+inline ::protocol_msg::VideoFile* VideoFileList::_internal_add_filelist() {
+  return filelist_.Add();
+}
+inline ::protocol_msg::VideoFile* VideoFileList::add_filelist() {
+  // @@protoc_insertion_point(field_add:protocol_msg.VideoFileList.filelist)
+  return _internal_add_filelist();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::protocol_msg::VideoFile >&
+VideoFileList::filelist() const {
+  // @@protoc_insertion_point(field_list:protocol_msg.VideoFileList.filelist)
+  return filelist_;
+}
+
+// -------------------------------------------------------------------
+
+// TestMode_PlayVideo
+
+// int32 index = 1;
+inline void TestMode_PlayVideo::clear_index() {
+  index_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 TestMode_PlayVideo::_internal_index() const {
+  return index_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 TestMode_PlayVideo::index() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.TestMode_PlayVideo.index)
+  return _internal_index();
+}
+inline void TestMode_PlayVideo::_internal_set_index(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  index_ = value;
+}
+inline void TestMode_PlayVideo::set_index(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_index(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.TestMode_PlayVideo.index)
+}
+
+// -------------------------------------------------------------------
+
+// LearningMode_AddUser
+
+// int32 n_shots = 1;
+inline void LearningMode_AddUser::clear_n_shots() {
+  n_shots_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 LearningMode_AddUser::_internal_n_shots() const {
+  return n_shots_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 LearningMode_AddUser::n_shots() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.LearningMode_AddUser.n_shots)
+  return _internal_n_shots();
+}
+inline void LearningMode_AddUser::_internal_set_n_shots(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  n_shots_ = value;
+}
+inline void LearningMode_AddUser::set_n_shots(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_n_shots(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.LearningMode_AddUser.n_shots)
+}
+
+// string name = 2;
+inline void LearningMode_AddUser::clear_name() {
+  name_.ClearToEmpty();
+}
+inline const std::string& LearningMode_AddUser::name() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.LearningMode_AddUser.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void LearningMode_AddUser::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:protocol_msg.LearningMode_AddUser.name)
+}
+inline std::string* LearningMode_AddUser::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:protocol_msg.LearningMode_AddUser.name)
+  return _internal_mutable_name();
+}
+inline const std::string& LearningMode_AddUser::_internal_name() const {
+  return name_.Get();
+}
+inline void LearningMode_AddUser::_internal_set_name(const std::string& value) {
+  
+  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* LearningMode_AddUser::_internal_mutable_name() {
+  
+  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* LearningMode_AddUser::release_name() {
+  // @@protoc_insertion_point(field_release:protocol_msg.LearningMode_AddUser.name)
+  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void LearningMode_AddUser::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:protocol_msg.LearningMode_AddUser.name)
+}
+
+// -------------------------------------------------------------------
+
+// VideoFrame
+
+// int32 img_size = 1;
+inline void VideoFrame::clear_img_size() {
+  img_size_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFrame::_internal_img_size() const {
+  return img_size_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VideoFrame::img_size() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.VideoFrame.img_size)
+  return _internal_img_size();
+}
+inline void VideoFrame::_internal_set_img_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  img_size_ = value;
+}
+inline void VideoFrame::set_img_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_img_size(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.VideoFrame.img_size)
+}
+
+// bytes img_data = 2;
+inline void VideoFrame::clear_img_data() {
+  img_data_.ClearToEmpty();
+}
+inline const std::string& VideoFrame::img_data() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.VideoFrame.img_data)
+  return _internal_img_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void VideoFrame::set_img_data(ArgT0&& arg0, ArgT... args) {
+ 
+ img_data_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:protocol_msg.VideoFrame.img_data)
+}
+inline std::string* VideoFrame::mutable_img_data() {
+  // @@protoc_insertion_point(field_mutable:protocol_msg.VideoFrame.img_data)
+  return _internal_mutable_img_data();
+}
+inline const std::string& VideoFrame::_internal_img_data() const {
+  return img_data_.Get();
+}
+inline void VideoFrame::_internal_set_img_data(const std::string& value) {
+  
+  img_data_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* VideoFrame::_internal_mutable_img_data() {
+  
+  return img_data_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* VideoFrame::release_img_data() {
+  // @@protoc_insertion_point(field_release:protocol_msg.VideoFrame.img_data)
+  return img_data_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void VideoFrame::set_allocated_img_data(std::string* img_data) {
+  if (img_data != nullptr) {
+    
+  } else {
+    
+  }
+  img_data_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), img_data,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:protocol_msg.VideoFrame.img_data)
+}
+
+// -------------------------------------------------------------------
+
+// DeleteUser
+
+// string name = 1;
+inline void DeleteUser::clear_name() {
+  name_.ClearToEmpty();
+}
+inline const std::string& DeleteUser::name() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.DeleteUser.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void DeleteUser::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:protocol_msg.DeleteUser.name)
+}
+inline std::string* DeleteUser::mutable_name() {
+  // @@protoc_insertion_point(field_mutable:protocol_msg.DeleteUser.name)
+  return _internal_mutable_name();
+}
+inline const std::string& DeleteUser::_internal_name() const {
+  return name_.Get();
+}
+inline void DeleteUser::_internal_set_name(const std::string& value) {
+  
+  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* DeleteUser::_internal_mutable_name() {
+  
+  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* DeleteUser::release_name() {
+  // @@protoc_insertion_point(field_release:protocol_msg.DeleteUser.name)
+  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void DeleteUser::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:protocol_msg.DeleteUser.name)
+}
+
+// -------------------------------------------------------------------
+
+// Ack
+
+// .protocol_msg.Ack.AckType acktype = 1;
+inline void Ack::clear_acktype() {
+  acktype_ = 0;
+}
+inline ::protocol_msg::Ack_AckType Ack::_internal_acktype() const {
+  return static_cast< ::protocol_msg::Ack_AckType >(acktype_);
+}
+inline ::protocol_msg::Ack_AckType Ack::acktype() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.Ack.acktype)
+  return _internal_acktype();
+}
+inline void Ack::_internal_set_acktype(::protocol_msg::Ack_AckType value) {
+  
+  acktype_ = value;
+}
+inline void Ack::set_acktype(::protocol_msg::Ack_AckType value) {
+  _internal_set_acktype(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.Ack.acktype)
+}
+
+// int32 arg = 2;
+inline void Ack::clear_arg() {
+  arg_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 Ack::_internal_arg() const {
+  return arg_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 Ack::arg() const {
+  // @@protoc_insertion_point(field_get:protocol_msg.Ack.arg)
+  return _internal_arg();
+}
+inline void Ack::_internal_set_arg(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  arg_ = value;
+}
+inline void Ack::set_arg(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_arg(value);
+  // @@protoc_insertion_point(field_set:protocol_msg.Ack.arg)
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace protocol_msg
+
+PROTOBUF_NAMESPACE_OPEN
+
+template <> struct is_proto_enum< ::protocol_msg::ControlMode_OpMode> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol_msg::ControlMode_OpMode>() {
+  return ::protocol_msg::ControlMode_OpMode_descriptor();
+}
+template <> struct is_proto_enum< ::protocol_msg::ServerSetting_CtlMode> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol_msg::ServerSetting_CtlMode>() {
+  return ::protocol_msg::ServerSetting_CtlMode_descriptor();
+}
+template <> struct is_proto_enum< ::protocol_msg::Ack_AckType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol_msg::Ack_AckType>() {
+  return ::protocol_msg::Ack_AckType_descriptor();
+}
+
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
 

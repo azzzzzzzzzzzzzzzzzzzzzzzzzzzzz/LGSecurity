@@ -60,19 +60,16 @@
     <ClInclude Include="Common\NetworkManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Protocol\ImageProtocol.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Protocol\LoginProtocol.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Protocol\Msg\protocolImage.pb.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Common\Protocol\Msg\protocolLogin.pb.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Common\Protocol\ProtocolManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Protocol\BaseProtocol.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Protocol\MyProtocol.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -107,19 +104,16 @@
     <ClCompile Include="Common\NetworkManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Common\Protocol\ImageProtocol.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Protocol\LoginProtocol.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\Protocol\Msg\protocolImage.pb.cc">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Common\Protocol\Msg\protocolLogin.pb.cc">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Common\Protocol\ProtocolManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Protocol\BaseProtocol.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Protocol\MyProtocol.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -132,7 +126,6 @@
     <None Include="res\MFCApplication1.rc2">
       <Filter>리소스 파일</Filter>
     </None>
-    <None Include="Common\Protocol\Msg\protocolImage.proto" />
     <None Include="Common\Protocol\Msg\protocolLogin.proto" />
   </ItemGroup>
   <ItemGroup>

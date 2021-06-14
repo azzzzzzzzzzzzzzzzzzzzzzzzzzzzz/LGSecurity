@@ -22,6 +22,9 @@ typedef SSIZE_T ssize_t;
 #define  CLOSE_SOCKET closesocket
 #define  SOCKET_FD_TYPE SOCKET
 #define  BAD_SOCKET_FD INVALID_SOCKET
+#define CERT_FILE "./certs/ca-cert.pem"
+#define KEY_FILE  "private.pem"
+#define CHAIN_CERT_FILE "ca-cert.pem"
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -32,6 +35,13 @@ typedef SSIZE_T ssize_t;
 #define  CLOSE_SOCKET close
 #define  SOCKET_FD_TYPE int
 #define  BAD_SOCKET_FD  -1
+/* wolfSSL */
+#include <wolfssl/options.h>
+#include <wolfssl/ssl.h>
+#include <wolfssl/wolfio.h>
+#define CERT_FILE "./certs/ca-cert.pem"
+#define KEY_FILE  "private.pem"
+#define CHAIN_CERT_FILE "ca-cert.pem"
 #endif
 
 //------------------------------------------------------------------------------------------------
@@ -46,6 +56,8 @@ typedef struct
 typedef struct
 {
  SOCKET_FD_TYPE ConnectedFd;
+ WOLFSSL_CTX* ctx;
+ WOLFSSL* ssl;
 } TTcpConnectedPort;
 
 //------------------------------------------------------------------------------------------------
@@ -55,12 +67,16 @@ TTcpListenPort *OpenTcpListenPort(short localport);
 void CloseTcpListenPort(TTcpListenPort **TcpListenPort);
 TTcpConnectedPort *AcceptTcpConnection(TTcpListenPort *TcpListenPort, 
                        struct sockaddr_in *cli_addr,socklen_t *clilen);
-TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno, bool isSecure);
+TTcpConnectedPort *AcceptTcpConnectionTLS(TTcpListenPort *TcpListenPort, 
+                       struct sockaddr_in *cli_addr,socklen_t *clilen);
+TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno);
+TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char * remoteportno);
 void CloseTcpConnectedPort(TTcpConnectedPort **TcpConnectedPort);
+void CloseTcpConnectedPortTLS(TTcpConnectedPort **TcpConnectedPort);
 ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length);
+ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length);
 ssize_t WriteDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length);
-ssize_t ReadDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* data, size_t length);
-ssize_t WriteDataTcpSecure(TTcpConnectedPort* TcpConnectedPort, unsigned char* data, size_t length);
+ssize_t WriteDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length);
 void TestCode();
 #endif
 //------------------------------------------------------------------------------------------------

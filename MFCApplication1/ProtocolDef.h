@@ -14,22 +14,22 @@ enum OperMode
 	MODE_TEST_RUN,
 };
 
-enum MsgReq
+
+enum  MsgReq
 {
-	MSG_LOGIN_REGISTER_USER = 1000,
+	MSG_LOGIN = 1000,
 	MSG_LOGIN_REQUEST = 1001,
-	MSG_LOGIN_SUPER_USER = 1,
-	MSG_LOGIN_USER = 2,
-	MSG_CONTROL_MODE_RUN = 1100,
-	MSG_CONTROL_MODE_LEARNING = 1101,
-	MSG_CONTROL_MODE_TEST = 1102,
-	MSG_CONTROL_START_SEND_IMAGE = 1200,
-	MSG_CONTROL_STOP_SEND_IMAGE = 1201,
-};
+	MSG_IMAGE = 1002,
+	MSG_CONTROL_MODE=1003,
+	MSG_SERVER_SETTING = 1004,
+	MSG_VIDEO_FILE_LIST = 1005,
+	MSG_ACK = 9999,
+} ;
 
 enum MsgRecv
 {
 	MSG_OK = 1200,
+	MSG_NOK = 1201,
 	MSG_LEARNING_COMPLETE = 1201,
 	MSG_RUN_MODE = 1202,
 	MSG_LEARNING_MODE = 1203,
@@ -44,3 +44,18 @@ enum MsgUserDefine
 {
 	MSG_NO_VIDEO = 2000,
 };
+
+
+#pragma pack(push, 1)    // 1바이트 크기로 정렬
+typedef  struct {
+    unsigned char head[4];
+    uint32_t size;
+	uint32_t timestamp;
+	uint32_t msgtype;
+} MyPacketHeader;
+
+typedef  struct {
+	MyPacketHeader hdr;
+	unsigned char payload[0];
+} MyPacket;
+#pragma pack(pop)
