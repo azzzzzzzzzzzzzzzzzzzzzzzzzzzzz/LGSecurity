@@ -73,6 +73,14 @@ CVideoFileListProtocol::CVideoFileListProtocol(vector<string> &videos)
 	*msg.mutable_filelist() = { videos.begin(), videos.end() };
 }
 
+/*---------------------------
+		CVideoSelectedIndexProtocol
+---------------------------*/
+CVideoSelectedIndexProtocol::CVideoSelectedIndexProtocol(const unsigned int index)
+	:CBaseProtocol(MSG_VIDEO_FILE_LIST, &msg)
+{
+	msg.set_index(index);
+}
 
 /*---------------------------
 		CAckProtocol

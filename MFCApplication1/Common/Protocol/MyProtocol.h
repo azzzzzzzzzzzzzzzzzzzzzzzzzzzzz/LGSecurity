@@ -71,6 +71,17 @@ public:
 	protocol_msg::VideoFileList msg;
 };
 
+/*---------------------------
+		CVideoSelectedIndexProtocol
+---------------------------*/
+class CVideoSelectedIndexProtocol : public CBaseProtocol
+{
+public:
+	CVideoSelectedIndexProtocol() :CBaseProtocol(MSG_VIDEO_SELECTED, &msg) {};
+	CVideoSelectedIndexProtocol(const unsigned int index);
+	protocol_msg::TestMode_PlayVideo msg;
+};
+
 
 /*---------------------------
 		CAckProtocol
