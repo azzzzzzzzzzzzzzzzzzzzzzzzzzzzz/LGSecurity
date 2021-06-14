@@ -23,65 +23,65 @@ WOLFSSL* ssl = NULL;
 
 TTcpListenPort *OpenTcpListenPort(short localport)
 {
-  TTcpListenPort *TcpListenPort;
-  struct sockaddr_in myaddr;
+	TTcpListenPort *TcpListenPort;
+	struct sockaddr_in myaddr;
 
-  TcpListenPort= new (std::nothrow) TTcpListenPort;  
-  
-  if (TcpListenPort==NULL)
-     {
-      fprintf(stderr, "TUdpPort memory allocation failed\n");
-      return(NULL);
-     }
-  TcpListenPort->ListenFd=BAD_SOCKET_FD;
-  #if  defined(_WIN32) || defined(_WIN64)
-  WSADATA wsaData;
-  int     iResult;
-  iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-  if (iResult != 0) 
-    {
-     delete TcpListenPort;
-     printf("WSAStartup failed: %d\n", iResult);
-     return(NULL);
-    }
+	TcpListenPort= new (std::nothrow) TTcpListenPort;  
+
+	if (TcpListenPort==NULL)
+	{
+		fprintf(stderr, "TUdpPort memory allocation failed\n");
+		return(NULL);
+	}
+	TcpListenPort->ListenFd=BAD_SOCKET_FD;
+#if  defined(_WIN32) || defined(_WIN64)
+	WSADATA wsaData;
+	int     iResult;
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0) 
+	{
+		delete TcpListenPort;
+		printf("WSAStartup failed: %d\n", iResult);
+		return(NULL);
+	}
 #endif
-  // create a socket
-  if ((TcpListenPort->ListenFd= socket(AF_INET, SOCK_STREAM, 0)) == BAD_SOCKET_FD)
-     {
-      CloseTcpListenPort(&TcpListenPort);
-      perror("socket failed");
-      return(NULL);  
-     }
-  int option = 1; 
+	// create a socket
+	if ((TcpListenPort->ListenFd= socket(AF_INET, SOCK_STREAM, 0)) == BAD_SOCKET_FD)
+	{
+		CloseTcpListenPort(&TcpListenPort);
+		perror("socket failed");
+		return(NULL);  
+	}
+	int option = 1; 
 
-   if(setsockopt(TcpListenPort->ListenFd,SOL_SOCKET,SO_REUSEADDR,(char*)&option,sizeof(option)) < 0)
-     {
-      CloseTcpListenPort(&TcpListenPort);
-      perror("setsockopt failed");
-      return(NULL);
-     }
+	if(setsockopt(TcpListenPort->ListenFd,SOL_SOCKET,SO_REUSEADDR,(char*)&option,sizeof(option)) < 0)
+	{
+		CloseTcpListenPort(&TcpListenPort);
+		perror("setsockopt failed");
+		return(NULL);
+	}
 
-  // bind it to all local addresses and pick any port number
-  memset((char *)&myaddr, 0, sizeof(myaddr));
-  myaddr.sin_family = AF_INET;
-  myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  myaddr.sin_port = htons(localport);
+	// bind it to all local addresses and pick any port number
+	memset((char *)&myaddr, 0, sizeof(myaddr));
+	myaddr.sin_family = AF_INET;
+	myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	myaddr.sin_port = htons(localport);
 
-  if (bind(TcpListenPort->ListenFd, (struct sockaddr *)&myaddr, sizeof(myaddr)) < 0)
-    {
-      CloseTcpListenPort(&TcpListenPort);
-      perror("bind failed");
-      return(NULL); 
-    }
-   
- 
-  if (listen(TcpListenPort->ListenFd,5)< 0)
-  {
-      CloseTcpListenPort(&TcpListenPort);
-      perror("bind failed");
-      return(NULL);	  
-  }
-  return(TcpListenPort);
+	if (bind(TcpListenPort->ListenFd, (struct sockaddr *)&myaddr, sizeof(myaddr)) < 0)
+	{
+		CloseTcpListenPort(&TcpListenPort);
+		perror("bind failed");
+		return(NULL); 
+	}
+
+
+	if (listen(TcpListenPort->ListenFd,5)< 0)
+	{
+		CloseTcpListenPort(&TcpListenPort);
+		perror("bind failed");
+		return(NULL);	  
+	}
+	return(TcpListenPort);
 }
 //-----------------------------------------------------------------
 // END OpenTCPListenPort
@@ -91,16 +91,16 @@ TTcpListenPort *OpenTcpListenPort(short localport)
 //-----------------------------------------------------------------
 void CloseTcpListenPort(TTcpListenPort **TcpListenPort)
 {
-  if ((*TcpListenPort)==NULL) return;
-  if ((*TcpListenPort)->ListenFd!=BAD_SOCKET_FD)  
-     {
-      CLOSE_SOCKET((*TcpListenPort)->ListenFd);
-      (*TcpListenPort)->ListenFd=BAD_SOCKET_FD;
-     }
-   delete (*TcpListenPort);
-  (*TcpListenPort)=NULL;
+	if ((*TcpListenPort)==NULL) return;
+	if ((*TcpListenPort)->ListenFd!=BAD_SOCKET_FD)  
+	{
+		CLOSE_SOCKET((*TcpListenPort)->ListenFd);
+		(*TcpListenPort)->ListenFd=BAD_SOCKET_FD;
+	}
+	delete (*TcpListenPort);
+	(*TcpListenPort)=NULL;
 #if  defined(_WIN32) || defined(_WIN64)
-   WSACleanup();
+	WSACleanup();
 #endif
 }
 //-----------------------------------------------------------------
@@ -111,45 +111,45 @@ void CloseTcpListenPort(TTcpListenPort **TcpListenPort)
 // Listening port
 //-----------------------------------------------------------------
 TTcpConnectedPort *AcceptTcpConnection(TTcpListenPort *TcpListenPort, 
-                       struct sockaddr_in *cli_addr,socklen_t *clilen)
+		struct sockaddr_in *cli_addr,socklen_t *clilen)
 {
-  TTcpConnectedPort *TcpConnectedPort;
+	TTcpConnectedPort *TcpConnectedPort;
 
-  TcpConnectedPort= new (std::nothrow) TTcpConnectedPort;  
-  
-  if (TcpConnectedPort==NULL)
-     {
-      fprintf(stderr, "TUdpPort memory allocation failed\n");
-      return(NULL);
-     }
-  TcpConnectedPort->ConnectedFd= accept(TcpListenPort->ListenFd,
-                      (struct sockaddr *) cli_addr,clilen);
-					  
-  if (TcpConnectedPort->ConnectedFd== BAD_SOCKET_FD) 
-  {
-	perror("ERROR on accept");
-	delete TcpConnectedPort;
-	return NULL;
-  }
-  
- int bufsize = 200 * 1024;
- if (setsockopt(TcpConnectedPort->ConnectedFd, SOL_SOCKET, 
-                 SO_RCVBUF, (char *)&bufsize, sizeof(bufsize)) == -1)
+	TcpConnectedPort= new (std::nothrow) TTcpConnectedPort;  
+
+	if (TcpConnectedPort==NULL)
 	{
-         CloseTcpConnectedPort(&TcpConnectedPort);
-         perror("setsockopt SO_SNDBUF failed");
-         return(NULL);
+		fprintf(stderr, "TUdpPort memory allocation failed\n");
+		return(NULL);
 	}
- if (setsockopt(TcpConnectedPort->ConnectedFd, SOL_SOCKET, 
-                 SO_SNDBUF, (char *)&bufsize, sizeof(bufsize)) == -1)
+	TcpConnectedPort->ConnectedFd= accept(TcpListenPort->ListenFd,
+			(struct sockaddr *) cli_addr,clilen);
+
+	if (TcpConnectedPort->ConnectedFd== BAD_SOCKET_FD) 
 	{
-         CloseTcpConnectedPort(&TcpConnectedPort);
-         perror("setsockopt SO_SNDBUF failed");
-         return(NULL);
+		perror("ERROR on accept");
+		delete TcpConnectedPort;
+		return NULL;
 	}
 
+	int bufsize = 200 * 1024;
+	if (setsockopt(TcpConnectedPort->ConnectedFd, SOL_SOCKET, 
+				SO_RCVBUF, (char *)&bufsize, sizeof(bufsize)) == -1)
+	{
+		CloseTcpConnectedPort(&TcpConnectedPort);
+		perror("setsockopt SO_SNDBUF failed");
+		return(NULL);
+	}
+	if (setsockopt(TcpConnectedPort->ConnectedFd, SOL_SOCKET, 
+				SO_SNDBUF, (char *)&bufsize, sizeof(bufsize)) == -1)
+	{
+		CloseTcpConnectedPort(&TcpConnectedPort);
+		perror("setsockopt SO_SNDBUF failed");
+		return(NULL);
+	}
 
- return TcpConnectedPort;
+
+	return TcpConnectedPort;
 }
 //-----------------------------------------------------------------
 // END AcceptTcpConnection
@@ -160,38 +160,37 @@ TTcpConnectedPort *AcceptTcpConnection(TTcpListenPort *TcpListenPort,
 //-----------------------------------------------------------------
 TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno, bool isSecure)
 {
-    printf("Start OpenTcpConnection.\n");
-  TTcpConnectedPort *TcpConnectedPort;
-  struct sockaddr_in myaddr;
-  int                s;
-  struct addrinfo   hints;
-  struct addrinfo   *result = NULL;
+	TTcpConnectedPort *TcpConnectedPort;
+	struct sockaddr_in myaddr;
+	int                s;
+	struct addrinfo   hints;
+	struct addrinfo   *result = NULL;
 
-  TcpConnectedPort= new (std::nothrow) TTcpConnectedPort;  
-  
-  if (TcpConnectedPort==NULL)
-     {
-      fprintf(stderr, "TUdpPort memory allocation failed\n");
-      return(NULL);
-     }
-  TcpConnectedPort->ConnectedFd=BAD_SOCKET_FD;
-  #if  defined(_WIN32) || defined(_WIN64)
-  WSADATA wsaData;
-  int     iResult;
-  iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-  if (iResult != 0) 
-    {
-     delete TcpConnectedPort;
-     printf("WSAStartup failed: %d\n", iResult);
-     return(NULL);
-    }
+	TcpConnectedPort= new (std::nothrow) TTcpConnectedPort;  
+
+	if (TcpConnectedPort==NULL)
+	{
+		fprintf(stderr, "TUdpPort memory allocation failed\n");
+		return(NULL);
+	}
+	TcpConnectedPort->ConnectedFd=BAD_SOCKET_FD;
+#if  defined(_WIN32) || defined(_WIN64)
+	WSADATA wsaData;
+	int     iResult;
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0) 
+	{
+		delete TcpConnectedPort;
+		printf("WSAStartup failed: %d\n", iResult);
+		return(NULL);
+	}
 #endif
-  // create a socket
-   memset(&hints, 0, sizeof(struct addrinfo));
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_protocol = IPPROTO_TCP;
-  
+	// create a socket
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
   s = getaddrinfo(remotehostname, remoteportno, &hints, &result);
   if (s != 0) 
     {
