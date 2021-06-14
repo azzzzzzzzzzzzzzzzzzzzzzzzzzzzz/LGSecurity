@@ -47,6 +47,17 @@ public:
 	protocol_msg::ControlMode msg;
 };
 
+/*---------------------------
+		CLearningModeProtocol
+---------------------------*/
+class CLearningModeProtocol : public CBaseProtocol
+{
+public:
+	CLearningModeProtocol() :CBaseProtocol(MSG_CONTROL_LEARNING_MODE, &msg) {};
+	CLearningModeProtocol(const string name, const unsigned int numImage);
+	protocol_msg::LearningMode_AddUser msg;
+};
+
 
 /*---------------------------
 		CServerSettingProtocol

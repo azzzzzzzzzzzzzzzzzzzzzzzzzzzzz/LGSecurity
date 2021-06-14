@@ -220,6 +220,10 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 				fileList.assign(fileLIstPacket->msg.filelist().begin(), fileLIstPacket->msg.filelist().end());
 				break;
 			}
+			case MSG_LEARNING_COMPLETE:
+			{
+				break;
+			}
 			default:
 				printf("Unknown msg type..\n");
 				break;
@@ -240,6 +244,10 @@ bool NetworkManager::send_packet(CBaseProtocol& protocol)
 	CProtocolManager proto_man;
 	size_t leng = 0;
 	unsigned char* pkt = proto_man.make_packet(protocol, &leng);
+
+	if (pkt == NULL)
+		return false;
+
 	if (mIsSecure == true) {
 		WriteDataTcpTLS(mTcpConnectedPort, pkt, leng);
 	}

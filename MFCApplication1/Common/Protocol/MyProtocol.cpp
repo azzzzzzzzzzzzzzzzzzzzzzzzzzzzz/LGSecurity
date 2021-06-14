@@ -91,3 +91,12 @@ CAckProtocol::CAckProtocol(protocol_msg::Ack::AckType type, uint32_t arg)
 	 
 }
 
+/*---------------------------
+		CLearningModeProtocol
+---------------------------*/
+CLearningModeProtocol::CLearningModeProtocol(const string name, const unsigned int numImage)
+	:CBaseProtocol(MSG_CONTROL_LEARNING_MODE, &msg)
+{
+	msg.set_n_shots(numImage);
+	msg.set_name(name);
+}

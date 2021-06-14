@@ -33,6 +33,9 @@ CProtocolManager::create_protocol_instance(MsgReq id)
 		case MSG_VIDEO_FILE_LIST: 
 			cpkt = new CVideoFileListProtocol();
 			break;
+		case MSG_CONTROL_LEARNING_MODE:
+			cpkt = new CLearningModeProtocol();
+			break;
 		case MSG_ACK: 
 			cpkt = new CAckProtocol();
 			break;
