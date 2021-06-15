@@ -13,8 +13,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-#define DRAW_TIMER 1000
-#define ADD_TIMEOUT_TIMER 1001
+#define DRAW_TIMER 3000
+#define REQ_TIMEOUT_TIMER 3001
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -65,13 +65,12 @@ UINT ThreadForRecvImg(LPVOID param)
 
 	while (pMain->IsWorkingThread())
 	{
-		Sleep(10);	
+		Sleep(0);	
 		// KSS		
 		bool retvalue = false;
 		retvalue = networkManager->get_a_packet(pMain->getMatImage());
 		if (retvalue && pMain->getPlayStatus())
 		{
-
 			pMain->CreateBitmapInfo(pMain->getMatImage()->cols, pMain->getMatImage()->rows, pMain->getMatImage()->channels() * 8);
 			pMain->DrawImage();
 		}
@@ -84,12 +83,12 @@ CMFCApplication1Dlg::CMFCApplication1Dlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCAPPLICATION1_DIALOG, pParent)
 	, m_radioBtnSecureMode(0)
 	, m_radioBtnOperMode(0)
-	, m_bPlay(true)
 	, m_bModeStart(false)
 	, m_isWorkingThread(false)
 	, m_pThread(NULL)
 	, mNetworkManager(NULL)
 	, m_pBitmapInfo(NULL)
+	, mLearningCnt(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -98,12 +97,13 @@ void CMFCApplication1Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PICTURE, m_picture);
-	DDX_Control(pDX, IDC_BUTTON_PLAY, m_btnPlay);
-	DDX_Control(pDX, IDC_BUTTON_MODE_START, m_btnStart);
+	DDX_Control(pDX, IDC_BUTTON_MODE_START, m_btnStart); 
 	DDX_Control(pDX, IDC_BUTTON_ADD_NEW_USER, m_btnAdd);
 	DDX_Control(pDX, IDC_RADIO_MODE_LEARNING, m_radioLearning);
 	DDX_Control(pDX, IDC_RADIO_MODE_RUN, m_radioRun);
-	DDX_Control(pDX, IDC_RADIO_MODE_TEST_RUN, m_radioTestRun);
+	DDX_Control(pDX, IDC_RADIO_MODE_TEST_RUN, m_radioTestRun); 
+	DDX_Control(pDX, IDC_RADIO_SECURE, m_radioSecure);
+	DDX_Control(pDX, IDC_RADIO_NON_SECURE, m_radioNonSecure);
 	DDX_Control(pDX, IDC_EDIT_NEW_USER_NAME, m_EditName);
 	DDX_Control(pDX, IDC_EDIT_NEW_USER_IMGNUM, m_EditImageNum);
 	DDX_Control(pDX, IDC_EDIT_INPUT_ID, m_EditID);
@@ -114,6 +114,7 @@ void CMFCApplication1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPIN_IMAGE_NUM, m_spinIMGNum);
 	DDX_Control(pDX, IDC_LIST_VIDEO, m_ListVideo);
 	DDX_Control(pDX, IDC_BUTTON_SELECT_VIDEO, m_btnSelect);
+	DDX_Control(pDX, IDC_BUTTON_LOGIN, m_btnLogin);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
@@ -123,16 +124,15 @@ BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_WM_CLOSE()
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_BUTTON_PLAY, &CMFCApplication1Dlg::OnBnClickedButtonPlay)
 	ON_BN_CLICKED(IDC_BUTTON_LOGIN, &CMFCApplication1Dlg::OnBnClickedButtonLogin)
-	ON_BN_CLICKED(IDC_BUTTON_MODE_START, &CMFCApplication1Dlg::OnBnClickedButtonModeStart)
+	ON_BN_CLICKED(IDC_BUTTON_MODE_START, &CMFCApplication1Dlg::OnBnClickedButtonModeApply)
 	ON_BN_CLICKED(IDC_BUTTON_ADD_NEW_USER, &CMFCApplication1Dlg::OnBnClickedButtonAddNewUser)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_SECURE, IDC_RADIO_NON_SECURE, &CMFCApplication1Dlg::OnBnClickSecureRadioCtrl)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO_MODE_RUN, IDC_RADIO_MODE_TEST_RUN, &CMFCApplication1Dlg::OnBnClickOperModeRadioCtrl)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_IMAGE_NUM, &CMFCApplication1Dlg::OnDeltaposSpinImageNum)
-	ON_MESSAGE(MESSAGE_SHOW_POPUPDLG, &CMFCApplication1Dlg::showPopupDialog)
-	ON_MESSAGE(MESSAGE_USER, &CMFCApplication1Dlg::addVideoItemToList)
+	ON_MESSAGE(MESSAGE_USER, &CMFCApplication1Dlg::recvUserMsg)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_VIDEO, &CMFCApplication1Dlg::OnBnClickedButtonSelectVideo)
+	ON_BN_CLICKED(IDC_BUTTON_LOGOUT, &CMFCApplication1Dlg::OnBnClickedButtonLogout)
 END_MESSAGE_MAP()
 
 
@@ -173,6 +173,9 @@ BOOL CMFCApplication1Dlg::OnInitDialog()
 	m_spinIMGNum.SetPos(1);
 	m_radioLearning.SetCheck(FALSE);
 	m_radioRun.SetCheck(TRUE);
+	m_EditID.SetLimitText(10);
+	m_EditPW.SetLimitText(10);
+	m_EditName.SetLimitText(10);
 	mNetworkManager = new NetworkManager();
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
@@ -245,8 +248,8 @@ void CMFCApplication1Dlg::OnDestroy()
 void CMFCApplication1Dlg::OnClose()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	//CloseTcpConnectedPort(&m_tcpConnectedPort);
 	delete mNetworkManager;
+	delete m_pBitmapInfo;
 	CDialogEx::OnClose();
 }
 
@@ -258,11 +261,16 @@ void CMFCApplication1Dlg::OnTimer(UINT_PTR nIDEvent)
 	case DRAW_TIMER:
 
 		break;
-	case ADD_TIMEOUT_TIMER:
-		m_EditName.EnableWindow(true);
-		m_EditImageNum.EnableWindow(true);
-		m_btnAdd.EnableWindow(true);
-		KillTimer(ADD_TIMEOUT_TIMER);
+	case REQ_TIMEOUT_TIMER:
+		if (mNetworkManager->requestType() == MSG_LOGIN)
+			SendMessage(MESSAGE_USER, MSG_LOGIN_FAIL, NULL);
+		else if(mNetworkManager->requestType() == MSG_CONTROL_MODE)
+			SendMessage(MESSAGE_USER, MSG_MODE_CHANGE_FAIL, NULL);
+		else if (mNetworkManager->requestType() == MSG_CONTROL_LEARNING_MODE)
+			SendMessage(MESSAGE_USER, MSG_LEARNING_FAIL, NULL);
+		else if (mNetworkManager->requestType() == MSG_VIDEO_SELECTED)
+			SendMessage(MESSAGE_USER, MSG_VIDEO_SELECTED_FAIL, NULL);
+		KillTimer(REQ_TIMEOUT_TIMER);
 		break;
 	}
 
@@ -342,18 +350,14 @@ bool CMFCApplication1Dlg::checkIDPW(CString str)
 		return false;
 }
 
-
-void CMFCApplication1Dlg::OnBnClickedButtonPlay()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	m_bPlay = !m_bPlay;
-	m_btnPlay.SetWindowText((m_bPlay)? CString("||") : CString("▶"));
-}
-
-
 void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_btnLogin.EnableWindow(FALSE);
+	m_radioSecure.EnableWindow(FALSE);
+	m_radioNonSecure.EnableWindow(FALSE);
+	m_EditID.EnableWindow(FALSE);
+	m_EditPW.EnableWindow(FALSE);
 	mNetworkManager->setSecureMode((m_radioBtnSecureMode == MODE_SECURE) ? true : false);
 	CString id;
 	CString pw;
@@ -369,6 +373,12 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	if (false == mNetworkManager->openTcpConnection())
 	{
 		printf(" Fail OpenTcpConnection\n");
+		m_btnLogin.EnableWindow(TRUE);
+		m_radioSecure.EnableWindow(TRUE);
+		m_radioNonSecure.EnableWindow(TRUE);
+		m_EditID.EnableWindow(TRUE);
+		m_EditPW.EnableWindow(TRUE);
+		AfxMessageBox(_T("연결 실패"));
 		return;
 	}
 	
@@ -378,6 +388,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	string pws = string(CT2CA(pw));
 	CLoginProtocol login(ids, pws);
 	mNetworkManager->send_packet(login);
+	SetTimer(REQ_TIMEOUT_TIMER, 20000, NULL);
 	// receive login result
 
 	// login success
@@ -390,7 +401,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	//setModeRadioBtnStatus();
 }
 
-void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
+void CMFCApplication1Dlg::OnBnClickedButtonModeApply()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	m_bModeStart = !m_bModeStart;
@@ -420,6 +431,8 @@ void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
 			CControlModeProtocol mode(protocol_msg::ControlMode::RUN);
 			mNetworkManager->send_packet(mode);
 		}
+		m_btnStart.EnableWindow(FALSE);
+		SetTimer(REQ_TIMEOUT_TIMER, 20000, NULL);
 	}
 	else//stop
 	{
@@ -429,13 +442,13 @@ void CMFCApplication1Dlg::OnBnClickedButtonModeStart()
 		m_btnAdd.EnableWindow(FALSE);
 		m_ListVideo.EnableWindow(FALSE);
 		m_btnSelect.EnableWindow(FALSE);
-			OnBnClickedButtonPlay();
 	}
 }
 
 void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	mLearningCnt = 0;
 	CString name;
 	CString num;
 	m_EditName.GetWindowTextW(name);
@@ -447,15 +460,14 @@ void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 		return;
 	}
 
-	// TODO: Add request
-	printLog(_T("add button"));
+	printLog(_T("Start..."));
 	string namestr = string(CT2CA(name));
 	CLearningModeProtocol learningReq(namestr, cnt);
 	mNetworkManager->send_packet(learningReq);
 	m_EditName.EnableWindow(false);
 	m_EditImageNum.EnableWindow(false);
 	m_btnAdd.EnableWindow(false);
-	SetTimer(ADD_TIMEOUT_TIMER, 3000, NULL);
+	SetTimer(REQ_TIMEOUT_TIMER, 20000, NULL);//time out :20 sec
 }
 
 void CMFCApplication1Dlg::OnBnClickSecureRadioCtrl(UINT ID)
@@ -524,42 +536,7 @@ BOOL CMFCApplication1Dlg::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-LRESULT CMFCApplication1Dlg::showPopupDialog(WPARAM wParam, LPARAM IParam)
-{
-	switch (wParam)
-	{
-	case MSG_SERVER_ERROR:
-		AfxMessageBox(_T("서버에 에러가 발생하였습니다."));
-		break;
-	case MSG_LEARNING_COMPLETE:
-		AfxMessageBox(_T("이름 추가가 완료되었습니다."));
-		break;
-	case MSG_LOGIN_DUPLICATED_ID:
-		AfxMessageBox(_T("중복된 ID입니다."));
-		break;
-	case MSG_LOGIN_ERROR:
-		AfxMessageBox(_T("로그인에 실패하였습니다."));
-		break;
-	case MSG_NO_PERMISSION:
-		AfxMessageBox(_T("권한이 없습니다."));
-		break;
-	case MSG_OK:
-		AfxMessageBox(_T("성공!"));
-		break;
-	case MSG_NOK:
-		AfxMessageBox(_T("실패!"));
-		break;
-	case MSG_NO_VIDEO:
-		AfxMessageBox(_T("서버에 저장된 비디오가 없습니다."));
-		break;
-	default:
-		AfxMessageBox(_T("정의되지 않은 메세지입니다."));
-		break;
-	}
-	return LRESULT();
-}
-
-LRESULT CMFCApplication1Dlg::addVideoItemToList(WPARAM wParam, LPARAM IParam)
+LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 {
 	
 	switch (wParam)
@@ -571,14 +548,60 @@ LRESULT CMFCApplication1Dlg::addVideoItemToList(WPARAM wParam, LPARAM IParam)
 		CString strString = pstrString->GetString();
 		m_ListVideo.AddString(strString);
 	}
-		break;
+	break;
 	case MSG_LOGIN_SUCCESS:
-		AfxMessageBox((mNetworkManager->isAdmin())? _T("로그인 성공! (Admin)") : _T("로그인 성공! (Normal user)"));
+		AfxMessageBox((mNetworkManager->isAdmin()) ? _T("로그인 성공! (Admin)") : _T("로그인 성공! (Normal user)"));
 		m_btnStart.EnableWindow(TRUE);
 		setModeRadioBtnStatus();
+		KillTimer(REQ_TIMEOUT_TIMER);
 		break;
 	case MSG_LOGIN_FAIL:
+		m_btnLogin.EnableWindow(TRUE);
+		m_radioSecure.EnableWindow(TRUE);
+		m_radioNonSecure.EnableWindow(TRUE);
+		m_EditID.EnableWindow(TRUE);
+		m_EditPW.EnableWindow(TRUE);
 		AfxMessageBox(_T("로그인에 실패하였습니다."));
+		break;
+	case MSG_MODE_CHANGE_SUCCESS:
+		KillTimer(REQ_TIMEOUT_TIMER);
+		m_btnStart.EnableWindow(TRUE);
+		AfxMessageBox(_T("모드 변경 성공"));
+		break;
+	case MSG_MODE_CHANGE_FAIL:
+		m_btnStart.EnableWindow(TRUE);
+		AfxMessageBox(_T("모드 변경 실패"));
+		break;
+	case MSG_LEARNING_SUCCESS:
+	{
+		mLearningCnt++;
+		CString num;
+		m_EditImageNum.GetWindowTextW(num);
+		int cnt = _ttoi(num);
+		if (cnt <= mLearningCnt)
+		{
+			KillTimer(REQ_TIMEOUT_TIMER);
+			mLearningCnt = 0;
+			m_btnStart.EnableWindow(TRUE);
+			AfxMessageBox(_T("LEARNING 성공"));
+		}
+	}
+		break;
+	case MSG_LEARNING_FAIL:
+		m_btnStart.EnableWindow(TRUE);
+		AfxMessageBox(_T("LEARNING 실패"));
+		break;
+	case MSG_VIDEO_SELECTED_SUCCESS:
+		KillTimer(REQ_TIMEOUT_TIMER);
+		m_btnStart.EnableWindow(TRUE);
+		//AfxMessageBox(_T("비디오 선택 성공"));
+		break;
+	case MSG_VIDEO_SELECTED_FAIL:
+		m_btnStart.EnableWindow(TRUE);
+		AfxMessageBox(_T("비디오 선택 실패"));
+		break;
+	case MSG_NO_VIDEO:
+		AfxMessageBox(_T("서버에 저장된 비디오가 없습니다."));
 		break;
 	default:
 		break;		
@@ -598,7 +621,7 @@ int CMFCApplication1Dlg::getRadioBtnOperationMode()
 
 bool CMFCApplication1Dlg::getPlayStatus()
 {
-	return m_bPlay;
+	return m_bModeStart;
 }
 
 BITMAPINFO* CMFCApplication1Dlg::getBitmapInfo()
@@ -644,7 +667,14 @@ void CMFCApplication1Dlg::OnBnClickedButtonSelectVideo()
 		//send selected video name to server
 		CVideoSelectedIndexProtocol videoIdx(nSel);
 		mNetworkManager->send_packet(videoIdx);
+		SetTimer(REQ_TIMEOUT_TIMER, 20000, NULL);
 	}
 	else
 		AfxMessageBox(_T("비디오를 선택해주세요."));
+}
+
+
+void CMFCApplication1Dlg::OnBnClickedButtonLogout()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

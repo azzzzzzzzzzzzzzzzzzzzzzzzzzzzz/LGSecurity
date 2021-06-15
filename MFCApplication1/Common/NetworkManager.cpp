@@ -6,6 +6,7 @@ NetworkManager::NetworkManager()
 :mIsSecure(true)
 ,mIsAdmin(false)
 , mMode(MODE_RUN)
+, mRequestType(0)
 {
 	mProtocolManager = new CProtocolManager();
 }
@@ -50,6 +51,11 @@ void NetworkManager::setMode(const UINT mode)
 	mMode = mode;
 }
 
+void NetworkManager::setRequestType(const UINT reqType)
+{
+	mRequestType = reqType;
+}
+
 bool NetworkManager::isSecure()
 {
 	return mIsSecure;
@@ -63,6 +69,11 @@ bool NetworkManager::isAdmin()
 UINT NetworkManager::getMode()
 {
 	return mMode;
+}
+
+UINT NetworkManager::requestType()
+{
+	return mRequestType;
 }
 
 
@@ -87,9 +98,8 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 			{
 			case MSG_IMAGE:
 			{
-				printf("MsgReq::MSG_IMAGE\n");
 				CImageProtocol* img_pkt = dynamic_cast<CImageProtocol*>(pbase);
-				cv::imdecode(cv::Mat(img_pkt->msg.img_size(), 1, CV_8UC1, (uchar*)img_pkt->msg.img_data().c_str()), cv::IMREAD_COLOR, pImage);								
+				cv::imdecode(cv::Mat(img_pkt->msg.img_size(), 1, CV_8UC1, (uchar*)img_pkt->msg.img_data().c_str()), cv::IMREAD_COLOR, pImage);			
 			}
 			break;
 			case MSG_ACK:// ¼º°ø
@@ -97,10 +107,35 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 				
 				CAckProtocol* pkt = dynamic_cast<CAckProtocol*>(pbase);
 				printf("MsgReq::MSG_OK %d\n", pkt->msg.acktype());
-				//if (pkt->msg.acktype() == MSG_OK)
+				if(mRequestType == MSG_LOGIN)
 				{
 					setIsAdmin((pkt->msg.arg() == MODE_ADMIN) ? true : false);
-					SendMessage(hWnd, MESSAGE_USER, MSG_LOGIN_SUCCESS, NULL);
+					if (pkt->msg.acktype() == ACK_OK)
+						SendMessage(hWnd, MESSAGE_USER, MSG_LOGIN_SUCCESS, NULL);
+					else
+						SendMessage(hWnd, MESSAGE_USER, MSG_LOGIN_FAIL, NULL);
+				}
+				else if (mRequestType == MSG_CONTROL_MODE)
+				{
+					if (pkt->msg.acktype() == ACK_OK)
+						SendMessage(hWnd, MESSAGE_USER, MSG_MODE_CHANGE_SUCCESS, NULL);
+					else
+						SendMessage(hWnd, MESSAGE_USER, MSG_MODE_CHANGE_FAIL, NULL);
+				}
+				else if (mRequestType == MSG_CONTROL_LEARNING_MODE)
+				{
+					printf("MSG_CONTROL_LEARNING_MODE\n");
+					if (pkt->msg.acktype() == ACK_OK)
+						SendMessage(hWnd, MESSAGE_USER, MSG_LEARNING_SUCCESS, NULL);
+					else
+						SendMessage(hWnd, MESSAGE_USER, MSG_LEARNING_FAIL, NULL);
+				}
+				else if (mRequestType == MSG_VIDEO_SELECTED)
+				{
+					if (pkt->msg.acktype() == ACK_OK)
+						SendMessage(hWnd, MESSAGE_USER, MSG_VIDEO_SELECTED_SUCCESS, NULL);
+					else
+						SendMessage(hWnd, MESSAGE_USER, MSG_VIDEO_SELECTED_FAIL, NULL);					
 				}
 				//else if(pkt->msg.acktype() == MSG_NOK)
 				//{
@@ -122,7 +157,7 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 				vector<std::string> fileList;
 				fileList.assign(fileLIstPacket->msg.filelist().begin(), fileLIstPacket->msg.filelist().end());
 				if(fileList.size() == 0)
-					SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_NO_VIDEO, NULL);
+					SendMessage(hWnd, MESSAGE_USER, MSG_NO_VIDEO, NULL);
 
 				for (int i = 0; i < fileList.size(); i++)
 				{
@@ -133,9 +168,6 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 				printf("MSG_VIDEO_RECV END\n"); 
 				//PostMessage(hWnd, MESSAGE_ADD_ITEM_TO_LIST, MSG_PRINT_LOG, LPARAM(&str));
 			}
-			break;
-			case MSG_LEARNING_COMPLETE:
-				SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_LEARNING_COMPLETE, NULL);
 			break;
 			default:
 				printf("Unknown msg type..\n");
@@ -167,6 +199,7 @@ bool NetworkManager::send_packet(CBaseProtocol& protocol)
 	else {
 		WriteDataTcp(mTcpConnectedPort, pkt, leng);
 	}
+	mRequestType = protocol.msg_type;
 	delete pkt;
 	return true;
 }

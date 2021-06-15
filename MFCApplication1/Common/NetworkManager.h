@@ -27,6 +27,7 @@ private:
 	bool mIsSecure;
 	bool mIsAdmin;
 	UINT mMode;
+	UINT mRequestType;
 
 public:
 	bool get_a_packet(Mat* pImage);
@@ -36,9 +37,11 @@ public:
 	void setSecureMode(const bool mode);
 	void setIsAdmin(const bool admin);
 	void setMode(const UINT mode);
+	void setRequestType(const UINT reqType);
 	bool isSecure();
 	bool isAdmin();
 	UINT getMode();
+	UINT requestType();
 
 	NetworkManager();
 	~NetworkManager();

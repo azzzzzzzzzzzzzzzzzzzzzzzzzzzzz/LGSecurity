@@ -545,7 +545,6 @@ void CloseTcpConnectedPortTLS(TTcpConnectedPort **TcpConnectedPort)
 #if  defined(_WIN32) || defined(_WIN64)
 	WSACleanup();
 #endif
-	//wolfSSL_Cleanup();
 }
 void CloseTcpConnectedPort(TTcpConnectedPort **TcpConnectedPort)
 {
@@ -702,7 +701,7 @@ void TestCode()
     CWnd* pWnd = AfxGetApp()->GetMainWnd(); //AfxGetMainWnd();
     HWND hWnd = pWnd->m_hWnd;
 
-    PostMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_SERVER_ERROR, NULL);
+    //PostMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_SERVER_ERROR, NULL);
 }
 //-----------------------------------------------------------------
 // END WriteDataTcp

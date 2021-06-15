@@ -31,9 +31,8 @@ public:
 protected:
 	HICON m_hIcon;
 	CStatic m_picture;
-	
+	CButton m_btnLogin;
 	CButton m_btnStart;
-	CButton m_btnPlay;
 	CButton m_btnAdd;
 	CButton m_btnSelect;
 	UINT m_radioBtnSecureMode;
@@ -41,6 +40,8 @@ protected:
 	CButton m_radioLearning;
 	CButton m_radioRun;
 	CButton m_radioTestRun;
+	CButton m_radioSecure;
+	CButton m_radioNonSecure;
 	CEdit m_EditID;
 	CEdit m_EditPW;
 	CEdit m_EditName;
@@ -48,6 +49,7 @@ protected:
 	CEdit m_EditLog;
 	CSpinButtonCtrl m_spinIMGNum;
 	CListBox m_ListVideo;
+	UINT mLearningCnt;
 	
 	// 생성된 메시지 맵 함수
 	virtual BOOL OnInitDialog();
@@ -56,7 +58,6 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 	bool m_bModeStart;
-	bool m_bPlay;
 	CWinThread* m_pThread;
 	bool m_isWorkingThread;
 	Mat m_matImage;
@@ -67,9 +68,8 @@ public:
 	afx_msg void OnClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	
-	afx_msg void OnBnClickedButtonPlay();
 	afx_msg void OnBnClickedButtonLogin();
-	afx_msg void OnBnClickedButtonModeStart();
+	afx_msg void OnBnClickedButtonModeApply();
 	afx_msg void OnBnClickedButtonAddNewUser();
 	afx_msg void OnBnClickSecureRadioCtrl(UINT ID);
 	afx_msg void OnBnClickOperModeRadioCtrl(UINT ID);
@@ -82,8 +82,7 @@ public:
 	bool checkString(CString str);
 	bool checkIDPW(CString str);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	LRESULT showPopupDialog(WPARAM wParam, LPARAM IParam);
-	LRESULT addVideoItemToList(WPARAM wParam, LPARAM IParam);
+	LRESULT recvUserMsg(WPARAM wParam, LPARAM IParam);
 	int getRadioBtnSecureMode();
 	int getRadioBtnOperationMode();
 	bool getPlayStatus();
@@ -97,4 +96,6 @@ public:
 
 private:
 	NetworkManager* mNetworkManager;
+public:
+	afx_msg void OnBnClickedButtonLogout();
 };
