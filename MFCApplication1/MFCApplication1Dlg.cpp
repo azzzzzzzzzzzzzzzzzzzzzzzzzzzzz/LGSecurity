@@ -566,30 +566,43 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 	case MSG_MODE_CHANGE_SUCCESS:
 		KillTimer(REQ_TIMEOUT_TIMER);
 		m_btnStart.EnableWindow(TRUE);
-		AfxMessageBox(_T("모드 변경 성공"));
+		printLog(_T("모드 변경 성공"));
 		break;
 	case MSG_MODE_CHANGE_FAIL:
 		m_btnStart.EnableWindow(TRUE);
-		AfxMessageBox(_T("모드 변경 실패"));
+		printLog(_T("모드 변경 실패"));
 		break;
 	case MSG_LEARNING_SUCCESS:
 	{
 		mLearningCnt++;
 		CString num;
 		m_EditImageNum.GetWindowTextW(num);
-		int cnt = _ttoi(num);
-		if (cnt <= mLearningCnt)
+		int cnt = _ttoi(num) ;
+		if(mLearningCnt == 1)
+			printLog(_T("LEARNING 시작"));
+		else if (mLearningCnt > 1 && mLearningCnt < cnt + 2)
+		{
+			CString log;
+			log.Format(L"LEARNING .....%d/%d", mLearningCnt-1, cnt);
+			printLog(log);
+		}
+		
+		if (cnt + 2 <= mLearningCnt)
 		{
 			KillTimer(REQ_TIMEOUT_TIMER);
 			mLearningCnt = 0;
-			m_btnStart.EnableWindow(TRUE);
-			AfxMessageBox(_T("LEARNING 성공"));
+			m_btnAdd.EnableWindow(TRUE);
+			m_EditName.EnableWindow(TRUE);
+			m_EditImageNum.EnableWindow(TRUE);
+			printLog(_T("LEARNING 성공"));
 		}
 	}
 		break;
 	case MSG_LEARNING_FAIL:
-		m_btnStart.EnableWindow(TRUE);
-		AfxMessageBox(_T("LEARNING 실패"));
+		m_btnAdd.EnableWindow(TRUE);
+		m_EditName.EnableWindow(TRUE);
+		m_EditImageNum.EnableWindow(TRUE);
+		printLog(_T("LEARNING 실패"));
 		break;
 	case MSG_VIDEO_SELECTED_SUCCESS:
 		KillTimer(REQ_TIMEOUT_TIMER);
@@ -601,7 +614,11 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		AfxMessageBox(_T("비디오 선택 실패"));
 		break;
 	case MSG_NO_VIDEO:
+		KillTimer(REQ_TIMEOUT_TIMER);
 		AfxMessageBox(_T("서버에 저장된 비디오가 없습니다."));
+		break;
+	case MSG_RECONNECT:
+		printf("MSG_RECONNECT\n");
 		break;
 	default:
 		break;		

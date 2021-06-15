@@ -114,6 +114,8 @@ TTcpConnectedPort *AcceptTcpConnectionTLS(TTcpListenPort *TcpListenPort,
 	int ret = 0;
 
 	TcpConnectedPort= new (std::nothrow) TTcpConnectedPort;  
+	TcpConnectedPort->ctx = NULL;
+	TcpConnectedPort->ssl = NULL;
 
 	if (TcpConnectedPort==NULL)
 	{
@@ -252,7 +254,9 @@ TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char *
 	struct addrinfo   hints;
 	struct addrinfo   *result = NULL;
 
-	TcpConnectedPort= new (std::nothrow) TTcpConnectedPort;  
+	TcpConnectedPort= new (std::nothrow) TTcpConnectedPort; 
+	TcpConnectedPort->ctx = NULL;
+	TcpConnectedPort->ssl = NULL;
 
 	if (TcpConnectedPort==NULL)
 	{
@@ -533,6 +537,7 @@ void CloseTcpConnectedPortTLS(TTcpConnectedPort **TcpConnectedPort)
 	}
 	if ((*TcpConnectedPort)->ctx) {
 		wolfSSL_CTX_free((*TcpConnectedPort)->ctx);
+		//wolfSSL_Cleanup();
 	}
 
 	if ((*TcpConnectedPort)->ConnectedFd!=BAD_SOCKET_FD)  
@@ -582,12 +587,20 @@ ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, 
 	ssize_t bytes;
 	ssize_t my_packet_size=-1;
 	ssize_t accumulated=0;
+	CWnd* pWnd = AfxGetApp()->GetMainWnd();
+	HWND hWnd = pWnd->m_hWnd;
 
 	for (size_t i = 0; i < length; i += bytes)
 	{
-		if ((bytes = wolfSSL_recv(TcpConnectedPort->ssl, (char *)(data+i), length  - i,0)) == -1) 
+		bytes = wolfSSL_recv(TcpConnectedPort->ssl, (char*)(data + i), length - i, 0);
+		if (bytes == -1)
 		{
+			printf("recv error %d\n", WSAGetLastError());
 			return (-1);
+		}
+		else if (bytes == 0)
+		{
+			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);
 		}
 		accumulated+=bytes;
 		if (i==0) {
@@ -622,12 +635,20 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
 	ssize_t bytes;
 	ssize_t my_packet_size=-1;
 	ssize_t accumulated=0;
+	CWnd* pWnd = AfxGetApp()->GetMainWnd();
+	HWND hWnd = pWnd->m_hWnd;
 
 	for (size_t i = 0; i < length; i += bytes)
 	{
-		if ((bytes = recv(TcpConnectedPort->ConnectedFd, (char *)(data+i), length  - i,0)) == -1) 
+		bytes = recv(TcpConnectedPort->ConnectedFd, (char*)(data + i), length - i, 0);
+		if (bytes == -1)
 		{
+			printf("recv error %d\n", WSAGetLastError());
 			return (-1);
+		}
+		else if (bytes == 0)
+		{
+			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);
 		}
 		accumulated+=bytes;
 		if (i==0) {

@@ -146,7 +146,7 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 			case MSG_NOK:
 			{
 				printf("MsgReq::MSG_NOK\n");
-				SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_NOK, NULL);
+				//SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_NOK, NULL);
 				//CLoginProtocol* img_pkt = dynamic_cast<CImageProtocol*>(pbase);
 			}
 			break;
