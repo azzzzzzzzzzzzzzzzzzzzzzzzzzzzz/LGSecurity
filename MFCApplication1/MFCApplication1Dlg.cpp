@@ -319,7 +319,7 @@ void CMFCApplication1Dlg::printLog(CString logStr)
 {
 	CTime time = CTime::GetCurrentTime();
 	CString log;
-	log.Format(_T("[%s]	%s  \r\n"), (LPCTSTR)time.Format(L"%Y-%m-%d %H:%M:%S"), (LPCTSTR)logStr);
+	log.Format(_T("[%s] %s\r\n"), (LPCTSTR)time.Format(L"%H:%M:%S"), (LPCTSTR)logStr);
 	int len = m_EditLog.GetWindowTextLength();
 	m_EditLog.SetSel(len, len);
 	m_EditLog.ReplaceSel(log);
@@ -352,7 +352,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	m_EditPW.GetWindowTextW(pw);
 	if (id.IsEmpty() || checkIDPW(id) == false || pw.IsEmpty() || checkIDPW(pw) == false)
 	{
-		AfxMessageBox(_T("유효한 ID, PW를 입력해주세요. (알파벳, 숫자만 허용)"));
+		AfxMessageBox(_T("Please enter a valid ID and PW. (Alphabet, numeric only)"));
 		return;
 	}
 
@@ -372,7 +372,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 		m_radioNonSecure.EnableWindow(TRUE);
 		m_EditID.EnableWindow(TRUE);
 		m_EditPW.EnableWindow(TRUE);
-		AfxMessageBox(_T("연결 실패"));
+		AfxMessageBox(_T("Connection failed"));
 		return;
 	}	
 
@@ -449,7 +449,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 	int cnt = _ttoi(num);
 	if (name.IsEmpty() || checkString(name) == false)
 	{
-		AfxMessageBox(_T("유효한 이름을 입력해주세요. (알파벳만 허용)"));
+		AfxMessageBox(_T("Please enter a valid name. (Alphabet Only)"));
 		return;
 	}
 
@@ -459,7 +459,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 	m_EditName.EnableWindow(false);
 	m_EditImageNum.EnableWindow(false);
 	m_btnAdd.EnableWindow(false);
-	SetTimer(REQ_TIMEOUT_TIMER, cnt * 2000, NULL);//time out :20 sec
+	SetTimer(REQ_TIMEOUT_TIMER, cnt * 3500, NULL);//time out :20 sec
 }
 
 void CMFCApplication1Dlg::OnBnClickSecureRadioCtrl(UINT ID)
@@ -517,12 +517,18 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 	}
 	break;
 	case MSG_LOGIN_SUCCESS:
+		KillTimer(REQ_TIMEOUT_TIMER);
 		mShowReconnectMsg = false;
-		AfxMessageBox((mNetworkManager->isAdmin()) ? _T("로그인 성공! (Admin)") : _T("로그인 성공! (Normal user)"));
+		AfxMessageBox((mNetworkManager->isAdmin()) ? _T("Login success! (Admin)") : _T("Login success! (Normal user)"));
+		if (!mNetworkManager->isAdmin())
+		{
+			m_radioTestRun.SetCheck(FALSE);
+			m_radioLearning.SetCheck(FALSE);
+			m_radioRun.SetCheck(TRUE);
+		}
 		m_btnStart.EnableWindow(TRUE);
 		m_btnLogout.EnableWindow(TRUE);
 		setModeRadioBtnStatus();
-		KillTimer(REQ_TIMEOUT_TIMER);
 		break;
 	case MSG_LOGIN_FAIL:
 		m_btnLogin.EnableWindow(TRUE);
@@ -530,16 +536,16 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		m_radioNonSecure.EnableWindow(TRUE);
 		m_EditID.EnableWindow(TRUE);
 		m_EditPW.EnableWindow(TRUE);
-		AfxMessageBox(_T("로그인에 실패하였습니다."));
+		AfxMessageBox(_T("Login failed"));
 		break;
 	case MSG_MODE_CHANGE_SUCCESS:
 		KillTimer(REQ_TIMEOUT_TIMER);
 		m_btnStart.EnableWindow(TRUE);
-		printLog(_T("모드 변경 성공"));
+		printLog(_T("Mode change success"));
 		break;
 	case MSG_MODE_CHANGE_FAIL:
 		m_btnStart.EnableWindow(TRUE);
-		printLog(_T("모드 변경 실패"));
+		printLog(_T("Mode change failed"));
 		break;
 	case MSG_LEARNING_SUCCESS:
 	{
@@ -548,7 +554,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		m_EditImageNum.GetWindowTextW(num);
 		unsigned int cnt = _ttoi(num);
 		if(mLearningCnt == 1)
-			printLog(_T("LEARNING 시작"));
+			printLog(_T("LEARNING start"));
 		else if (mLearningCnt > 1 && mLearningCnt < cnt + 2)
 		{
 			CString log;
@@ -563,7 +569,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 			m_btnAdd.EnableWindow(TRUE);
 			m_EditName.EnableWindow(TRUE);
 			m_EditImageNum.EnableWindow(TRUE);
-			printLog(_T("LEARNING 성공"));
+			printLog(_T("LEARNING success"));
 		}
 	}
 		break;
@@ -571,26 +577,26 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		m_btnAdd.EnableWindow(TRUE);
 		m_EditName.EnableWindow(TRUE);
 		m_EditImageNum.EnableWindow(TRUE);
-		printLog(_T("LEARNING 실패"));
+		printLog(_T("LEARNING failed"));
 		break;
 	case MSG_VIDEO_SELECTED_SUCCESS:
 		KillTimer(REQ_TIMEOUT_TIMER);
 		m_btnSelect.EnableWindow(TRUE);
-		printLog(_T("비디오 선택 성공"));
+		printLog(_T("Video selection success"));
 		break;
 	case MSG_VIDEO_SELECTED_FAIL:
 		m_btnSelect.EnableWindow(TRUE);
-		printLog(_T("비디오 선택 실패"));
+		printLog(_T("Video selection failed"));
 		break;
 	case MSG_NO_VIDEO:
 		KillTimer(REQ_TIMEOUT_TIMER);
-		AfxMessageBox(_T("서버에 저장된 비디오가 없습니다."));
+		AfxMessageBox(_T("There are no videos stored on the server."));
 		break;
 	case MSG_RECONNECT:
 		if (mShowReconnectMsg == false)
 		{
 			clearVideoList();
-			printLog(_T("서버와의 연결이 끊어졌습니다."));
+			printLog(_T("The connection to the server has been lost."));
 			//AfxMessageBox(_T("서버와의 연결이 끊어졌습니다."));
 			mNetworkManager->resetStatus();
 			resetStatus();
@@ -664,7 +670,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonSelectVideo()
 		SetTimer(REQ_TIMEOUT_TIMER, 5000, NULL);
 	}
 	else
-		AfxMessageBox(_T("비디오를 선택해주세요."));
+		AfxMessageBox(_T("Please select a video to play."));
 }
 
 
@@ -676,7 +682,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogout()
 	resetStatus();
 	mNetworkManager->closeTCPConnection();
 	mNetworkManager->resetStatus();
-	printLog(_T("로그아웃!"));
+	printLog(_T("Logout!"));
 }
 
 void CMFCApplication1Dlg::resetStatus()
