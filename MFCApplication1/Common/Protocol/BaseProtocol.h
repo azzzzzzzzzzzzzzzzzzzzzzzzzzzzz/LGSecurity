@@ -22,13 +22,7 @@ public:
 	virtual unsigned char* serializeToArray(unsigned char* buffer);
 	virtual bool deSerialize(
 		const unsigned char* serializedBuffer,
-		const int serializedBufferSize);//glib
-	// virtual void deSerialize(int* msgType,
-	// 	string& userId,
-	// 	string& passWord,
-	// 	// int* authority,
-	// 	const unsigned char* serializedBuffer,
-	// 	const int serializedBufferSize);
+		const int serializedBufferSize);
 protected:
 	::google::protobuf::Message* pmsg;
 	

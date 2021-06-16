@@ -28,39 +28,6 @@ int TcpSendImageAsJpeg(TTcpConnectedPort * TcpConnectedPort,cv::Mat Image)
     return(WriteDataTcp(TcpConnectedPort,sendbuff.data(), sendbuff.size()));
 }
 
-int TcpSendImageAsJpegProtocol(TTcpConnectedPort* TcpConnectedPort, cv::Mat Image)
-{
-	// NetworkManager* networkManager = new NetworkManager();
-    
-	// cv::imencode(".jpg", Image, sendbuff, param);
-	
-	// networkManager->sendImageToClient(TcpConnectedPort, "lg", 1000, sendbuff.size(), (const char*)sendbuff.data());
-
-	// delete networkManager;
-	/*
-	ProtoBuff* msgBuff = new ProtoBuff();
-	msgBuff->setMsgType(1);
-	msgBuff->setUserId("lg");
-	msgBuff->setUserPw("lg_password");
-	msgBuff->setAuthority(2);
-	msgBuff->setOperationMode(3);
-	msgBuff->setNumOfImage(0);
-
-	unsigned int imagesize;
-    cv::imencode(".jpg", Image, sendbuff, param);
-
-	msgBuff->setImage(sendbuff.size(), (const char*)sendbuff.data());
-	unsigned char* serializedData = msgBuff->serializeToArray();
-	size_t serializedSize = msgBuff->getSize();
-
-	imagesize = htonl(serializedSize);
-    if (WriteDataTcp(TcpConnectedPort,(unsigned char *)&imagesize,sizeof(imagesize))!=sizeof(imagesize))
-    return(-1);
-    return(WriteDataTcp(TcpConnectedPort, serializedData, serializedSize));
-	*/
-	return 0;
-}
-
 //-----------------------------------------------------------------
 // END TcpSendImageAsJpeg
 //-----------------------------------------------------------------

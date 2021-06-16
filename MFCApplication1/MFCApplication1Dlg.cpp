@@ -544,7 +544,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		mLearningCnt++;
 		CString num;
 		m_EditImageNum.GetWindowTextW(num);
-		int cnt = _ttoi(num) ;
+		unsigned int cnt = _ttoi(num);
 		if(mLearningCnt == 1)
 			printLog(_T("LEARNING 시작"));
 		else if (mLearningCnt > 1 && mLearningCnt < cnt + 2)
