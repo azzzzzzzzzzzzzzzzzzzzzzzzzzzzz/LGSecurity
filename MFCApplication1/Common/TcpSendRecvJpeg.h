@@ -12,7 +12,6 @@
 #include "NetworkTCP.h"
 
 int TcpSendImageAsJpeg(TTcpConnectedPort * TcpConnectedPort, cv::Mat Image);
-int TcpSendImageAsJpegProtocol(TTcpConnectedPort * TcpConnectedPort, cv::Mat Image);
 bool TcpRecvImageAsJpeg(TTcpConnectedPort * TcpConnectedPort,cv::Mat *Image);
 bool TcpRecvImageAsJpegTLS(TTcpConnectedPort * TcpConnectedPort,cv::Mat *Image);
 

@@ -64,6 +64,6 @@ typedef  struct {
 
 typedef  struct {
 	MyPacketHeader hdr;
-	unsigned char payload[0];
+	unsigned char payload[1];
 } MyPacket;
 #pragma pack(pop)
