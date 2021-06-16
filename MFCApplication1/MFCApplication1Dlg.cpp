@@ -111,6 +111,7 @@ void CMFCApplication1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_VIDEO, m_ListVideo);
 	DDX_Control(pDX, IDC_BUTTON_SELECT_VIDEO, m_btnSelect);
 	DDX_Control(pDX, IDC_BUTTON_LOGIN, m_btnLogin);
+	DDX_Control(pDX, IDC_BUTTON_LOGOUT, m_btnLogout);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
@@ -519,6 +520,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		mShowReconnectMsg = false;
 		AfxMessageBox((mNetworkManager->isAdmin()) ? _T("로그인 성공! (Admin)") : _T("로그인 성공! (Normal user)"));
 		m_btnStart.EnableWindow(TRUE);
+		m_btnLogout.EnableWindow(TRUE);
 		setModeRadioBtnStatus();
 		KillTimer(REQ_TIMEOUT_TIMER);
 		break;
@@ -587,8 +589,9 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 	case MSG_RECONNECT:
 		if (mShowReconnectMsg == false)
 		{
+			clearVideoList();
 			printLog(_T("서버와의 연결이 끊어졌습니다."));
-			AfxMessageBox(_T("서버와의 연결이 끊어졌습니다."));
+			//AfxMessageBox(_T("서버와의 연결이 끊어졌습니다."));
 			mNetworkManager->resetStatus();
 			resetStatus();
 			mShowReconnectMsg = true;
@@ -668,15 +671,23 @@ void CMFCApplication1Dlg::OnBnClickedButtonSelectVideo()
 void CMFCApplication1Dlg::OnBnClickedButtonLogout()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	mShowReconnectMsg = false;
+	m_isWorkingThread = false;
+	resetStatus();
+	mNetworkManager->closeTCPConnection();
+	mNetworkManager->resetStatus();
+	printLog(_T("로그아웃!"));
 }
 
 void CMFCApplication1Dlg::resetStatus()
 {
+	clearVideoList();
 	m_radioSecure.EnableWindow(TRUE);
 	m_radioNonSecure.EnableWindow(TRUE);
 	m_EditID.EnableWindow(TRUE);
 	m_EditPW.EnableWindow(TRUE);
 	m_btnLogin.EnableWindow(TRUE);
+	m_btnLogout.EnableWindow(FALSE);
 	m_radioRun.EnableWindow(FALSE);
 	m_radioLearning.EnableWindow(FALSE);
 	m_radioTestRun.EnableWindow(FALSE);

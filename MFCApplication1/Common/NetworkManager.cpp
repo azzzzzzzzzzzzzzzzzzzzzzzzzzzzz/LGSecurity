@@ -84,7 +84,10 @@ void NetworkManager::resetStatus()
 	mRequestType = 0;
 }
 
-
+void NetworkManager::closeTCPConnection()
+{
+	CloseTcpConnectedPort(&mTcpConnectedPort);
+}
 
 bool NetworkManager::get_a_packet(Mat* pImage)
 {

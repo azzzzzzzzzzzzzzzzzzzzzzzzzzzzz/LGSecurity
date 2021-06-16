@@ -43,7 +43,7 @@ public:
 	UINT getMode();
 	UINT requestType();
 	void resetStatus();
-
+	void closeTCPConnection();
 	NetworkManager();
 	~NetworkManager();
 };

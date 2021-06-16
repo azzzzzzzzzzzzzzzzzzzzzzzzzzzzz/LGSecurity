@@ -117,11 +117,19 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>C:\Users\user\Documents\SSLecture\protobuf-cpp-3.17.2\protobuf-3.17.2\src;.\;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\IDE\WIN;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0;C:\opencv\build\include</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\Users\user\Documents\SSLecture\protobuf-cpp-3.17.2\build\Debug;C:\Users\user\Documents\SSLecture\wolfssl-4.7.0\wolfssl-4.7.0\x64\Debug;C:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world451d.lib;wolfssl.lib;libprotobufd.lib</AdditionalDependencies>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <OptimizeReferences>
+      </OptimizeReferences>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

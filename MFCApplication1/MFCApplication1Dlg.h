@@ -32,6 +32,7 @@ protected:
 	HICON m_hIcon;
 	CStatic m_picture;
 	CButton m_btnLogin;
+	CButton m_btnLogout;
 	CButton m_btnStart;
 	CButton m_btnAdd;
 	CButton m_btnSelect;
