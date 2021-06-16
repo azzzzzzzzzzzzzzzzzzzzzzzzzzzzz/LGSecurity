@@ -76,6 +76,14 @@ UINT NetworkManager::requestType()
 	return mRequestType;
 }
 
+void NetworkManager::resetStatus()
+{
+	mIsSecure = true;
+	mIsAdmin = false;
+	mMode = MODE_RUN;
+	mRequestType = 0;
+}
+
 
 
 bool NetworkManager::get_a_packet(Mat* pImage)

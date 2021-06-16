@@ -42,6 +42,7 @@ public:
 	bool isAdmin();
 	UINT getMode();
 	UINT requestType();
+	void resetStatus();
 
 	NetworkManager();
 	~NetworkManager();

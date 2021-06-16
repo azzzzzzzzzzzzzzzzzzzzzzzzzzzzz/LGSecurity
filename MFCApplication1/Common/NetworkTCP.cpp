@@ -316,17 +316,7 @@ TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char *
 		perror("setsockopt SO_SNDBUF failed");
 		return(NULL);
 	}
-	/*
-	timeval tv;
-	tv.tv_sec  = 2;
-	tv.tv_usec = 0;
-	if (setsockopt(TcpConnectedPort->ConnectedFd, SOL_SOCKET, SO_RCVTIMEO,(char*)&tv, sizeof(timeval)) == -1)
-	{
-		CloseTcpConnectedPort(&TcpConnectedPort);
-		perror("setsockopt SO_RCVTIMEO failed");
-		return(NULL);
-	}	
-	*/
+
 	if (connect(TcpConnectedPort->ConnectedFd,result->ai_addr,result->ai_addrlen) < 0) 
 	{
 		CloseTcpConnectedPortTLS(&TcpConnectedPort);
@@ -502,15 +492,6 @@ TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * re
 		return(NULL);
 	}
   printf("3. setsockopt SO_RCVBUF\n");
-	timeval tv;
-	tv.tv_sec  = 2;
-	tv.tv_usec = 0;
-	if (setsockopt(TcpConnectedPort->ConnectedFd, SOL_SOCKET, SO_RCVTIMEO,(char*)&tv, sizeof(timeval)) == -1)
-	{
-		CloseTcpConnectedPort(&TcpConnectedPort);
-		perror("setsockopt SO_RCVTIMEO failed");
-		return(NULL);
-	}	
 
 	if (connect(TcpConnectedPort->ConnectedFd,result->ai_addr,result->ai_addrlen) < 0) 
 	{
@@ -537,7 +518,7 @@ void CloseTcpConnectedPortTLS(TTcpConnectedPort **TcpConnectedPort)
 	}
 	if ((*TcpConnectedPort)->ctx) {
 		wolfSSL_CTX_free((*TcpConnectedPort)->ctx);
-		//wolfSSL_Cleanup();
+		wolfSSL_Cleanup();
 	}
 
 	if ((*TcpConnectedPort)->ConnectedFd!=BAD_SOCKET_FD)  

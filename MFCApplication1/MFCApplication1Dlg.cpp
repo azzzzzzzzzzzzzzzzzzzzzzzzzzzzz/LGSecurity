@@ -84,6 +84,7 @@ CMFCApplication1Dlg::CMFCApplication1Dlg(CWnd* pParent /*=nullptr*/)
 	, mNetworkManager(NULL)
 	, m_pBitmapInfo(NULL)
 	, mLearningCnt(0)
+	, mShowReconnectMsg(false)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -360,7 +361,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	m_EditID.EnableWindow(FALSE);
 	m_EditPW.EnableWindow(FALSE);
 	mNetworkManager->setSecureMode((m_radioBtnSecureMode == MODE_SECURE) ? true : false);
-
+	
 	// KSS TODO
 	if (false == mNetworkManager->openTcpConnection())
 	{
@@ -423,7 +424,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonModeApply()
 			mNetworkManager->send_packet(mode);
 		}
 		m_btnStart.EnableWindow(FALSE);
-		SetTimer(REQ_TIMEOUT_TIMER, 20000, NULL);
+		SetTimer(REQ_TIMEOUT_TIMER, 5000, NULL);
 	}
 	else//stop
 	{
@@ -457,7 +458,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonAddNewUser()
 	m_EditName.EnableWindow(false);
 	m_EditImageNum.EnableWindow(false);
 	m_btnAdd.EnableWindow(false);
-	SetTimer(REQ_TIMEOUT_TIMER, 20000, NULL);//time out :20 sec
+	SetTimer(REQ_TIMEOUT_TIMER, cnt * 2000, NULL);//time out :20 sec
 }
 
 void CMFCApplication1Dlg::OnBnClickSecureRadioCtrl(UINT ID)
@@ -506,6 +507,8 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 	{
 	case MSG_VIDEO_FILE_LIST:
 	{
+		KillTimer(REQ_TIMEOUT_TIMER);
+		m_btnStart.EnableWindow(TRUE);
 		if (IParam == NULL) return LRESULT();
 		CString* pstrString = (CString*)IParam;
 		CString strString = pstrString->GetString();
@@ -513,6 +516,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 	}
 	break;
 	case MSG_LOGIN_SUCCESS:
+		mShowReconnectMsg = false;
 		AfxMessageBox((mNetworkManager->isAdmin()) ? _T("로그인 성공! (Admin)") : _T("로그인 성공! (Normal user)"));
 		m_btnStart.EnableWindow(TRUE);
 		setModeRadioBtnStatus();
@@ -570,7 +574,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 	case MSG_VIDEO_SELECTED_SUCCESS:
 		KillTimer(REQ_TIMEOUT_TIMER);
 		m_btnSelect.EnableWindow(TRUE);
-		//AfxMessageBox(_T("비디오 선택 성공"));
+		printLog(_T("비디오 선택 성공"));
 		break;
 	case MSG_VIDEO_SELECTED_FAIL:
 		m_btnSelect.EnableWindow(TRUE);
@@ -581,33 +585,14 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		AfxMessageBox(_T("서버에 저장된 비디오가 없습니다."));
 		break;
 	case MSG_RECONNECT:
-		printf("MSG_RECONNECT\n");
-		printLog(_T("서버와의 연결이 끊어졌습니다."));
-		//m_isWorkingReconnectThread = true;
-		//m_pReconnectThread = AfxBeginThread(ThreadForReconnect, this);//TEST
-		/*
-		if (m_pThread != NULL)
+		if (mShowReconnectMsg == false)
 		{
-			m_pThread->SuspendThread();
-			delete m_pThread;
-			m_pThread = NULL;
-			m_isWorkingThread = false;
+			printLog(_T("서버와의 연결이 끊어졌습니다."));
+			AfxMessageBox(_T("서버와의 연결이 끊어졌습니다."));
+			mNetworkManager->resetStatus();
+			resetStatus();
+			mShowReconnectMsg = true;
 		}
-		OnBnClickedButtonLogin();*/
-		/*
-		Sleep(3000);
-		if (false == mNetworkManager->openTcpConnection())
-		{
-			printf(" Fail OpenTcpConnection\n");
-			m_btnLogin.EnableWindow(TRUE);
-			m_radioSecure.EnableWindow(TRUE);
-			m_radioNonSecure.EnableWindow(TRUE);
-			m_EditID.EnableWindow(TRUE);
-			m_EditPW.EnableWindow(TRUE);
-			SendMessage(MESSAGE_USER, MSG_RECONNECT, NULL);
-			//AfxMessageBox(_T("연결 실패"));
-		}
-		*/
 		break;
 	default:
 		break;		
@@ -673,7 +658,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonSelectVideo()
 		m_btnSelect.EnableWindow(FALSE);
 		CVideoSelectedIndexProtocol videoIdx(nSel);
 		mNetworkManager->send_packet(videoIdx);
-		SetTimer(REQ_TIMEOUT_TIMER, 20000, NULL);
+		SetTimer(REQ_TIMEOUT_TIMER, 5000, NULL);
 	}
 	else
 		AfxMessageBox(_T("비디오를 선택해주세요."));
@@ -683,4 +668,26 @@ void CMFCApplication1Dlg::OnBnClickedButtonSelectVideo()
 void CMFCApplication1Dlg::OnBnClickedButtonLogout()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+}
+
+void CMFCApplication1Dlg::resetStatus()
+{
+	m_radioSecure.EnableWindow(TRUE);
+	m_radioNonSecure.EnableWindow(TRUE);
+	m_EditID.EnableWindow(TRUE);
+	m_EditPW.EnableWindow(TRUE);
+	m_btnLogin.EnableWindow(TRUE);
+	m_radioRun.EnableWindow(FALSE);
+	m_radioLearning.EnableWindow(FALSE);
+	m_radioTestRun.EnableWindow(FALSE);
+	m_btnStart.EnableWindow(FALSE);
+	m_EditName.EnableWindow(FALSE);
+	m_EditImageNum.EnableWindow(FALSE);
+	m_btnAdd.EnableWindow(FALSE);
+	m_btnSelect.EnableWindow(FALSE);
+	m_ListVideo.EnableWindow(FALSE);
+	m_btnStart.SetWindowText(_T("Apply"));
+	m_bModeStart = false;
+	m_isWorkingThread = false;
+	mLearningCnt = 0;
 }

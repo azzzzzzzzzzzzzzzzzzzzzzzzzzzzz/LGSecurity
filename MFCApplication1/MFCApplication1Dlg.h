@@ -62,6 +62,7 @@ protected:
 	bool m_isWorkingThread;
 	Mat m_matImage;
 	BITMAPINFO* m_pBitmapInfo;
+	bool mShowReconnectMsg;
 public:	
 
 	afx_msg void OnDestroy();
@@ -92,7 +93,7 @@ public:
 	Mat* getMatImage();
 	void clearVideoList();
 	void setModeRadioBtnStatus();
-	
+	void resetStatus();
 
 private:
 	NetworkManager* mNetworkManager;
