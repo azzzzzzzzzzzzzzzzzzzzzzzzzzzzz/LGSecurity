@@ -53,7 +53,7 @@ public:
 class CLearningModeProtocol : public CBaseProtocol
 {
 public:
-	CLearningModeProtocol() :CBaseProtocol(MSG_CONTROL_LEARNING_MODE, &msg) {};
+	CLearningModeProtocol() :CBaseProtocol(MSG_START_LEARNING_MODE, &msg) {};
 	CLearningModeProtocol(const string name, const unsigned int numImage);
 	protocol_msg::LearningMode_AddUser msg;
 };
@@ -88,7 +88,7 @@ public:
 class CVideoSelectedIndexProtocol : public CBaseProtocol
 {
 public:
-	CVideoSelectedIndexProtocol() :CBaseProtocol(MSG_VIDEO_SELECTED, &msg) {};
+	CVideoSelectedIndexProtocol() :CBaseProtocol(MSG_VIDEO_SELECT, &msg) {};
 	CVideoSelectedIndexProtocol(const unsigned int index);
 	protocol_msg::TestMode_PlayVideo msg;
 };

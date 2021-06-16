@@ -102,9 +102,8 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 				cv::imdecode(cv::Mat(img_pkt->msg.img_size(), 1, CV_8UC1, (uchar*)img_pkt->msg.img_data().c_str()), cv::IMREAD_COLOR, pImage);			
 			}
 			break;
-			case MSG_ACK:// ¼º°ø
-			{
-				
+			case MSG_ACK:
+			{		
 				CAckProtocol* pkt = dynamic_cast<CAckProtocol*>(pbase);
 				printf("MsgReq::MSG_OK %d\n", pkt->msg.acktype());
 				if(mRequestType == MSG_LOGIN)
@@ -122,7 +121,7 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 					else
 						SendMessage(hWnd, MESSAGE_USER, MSG_MODE_CHANGE_FAIL, NULL);
 				}
-				else if (mRequestType == MSG_CONTROL_LEARNING_MODE)
+				else if (mRequestType == MSG_START_LEARNING_MODE)
 				{
 					printf("MSG_CONTROL_LEARNING_MODE\n");
 					if (pkt->msg.acktype() == ACK_OK)
@@ -130,29 +129,17 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 					else
 						SendMessage(hWnd, MESSAGE_USER, MSG_LEARNING_FAIL, NULL);
 				}
-				else if (mRequestType == MSG_VIDEO_SELECTED)
+				else if (mRequestType == MSG_VIDEO_SELECT)
 				{
 					if (pkt->msg.acktype() == ACK_OK)
 						SendMessage(hWnd, MESSAGE_USER, MSG_VIDEO_SELECTED_SUCCESS, NULL);
 					else
 						SendMessage(hWnd, MESSAGE_USER, MSG_VIDEO_SELECTED_FAIL, NULL);					
 				}
-				//else if(pkt->msg.acktype() == MSG_NOK)
-				//{
-				//	SendMessage(hWnd, MESSAGE_USER, MSG_LOGIN_FAIL, NULL);
-				//}
 			}
 			break;
-			case MSG_NOK:
+			case MSG_VIDEO_FILE_LIST:
 			{
-				printf("MsgReq::MSG_NOK\n");
-				//SendMessage(hWnd, MESSAGE_SHOW_POPUPDLG, MSG_NOK, NULL);
-				//CLoginProtocol* img_pkt = dynamic_cast<CImageProtocol*>(pbase);
-			}
-			break;
-			case MSG_VIDEO_RECV:
-			{
-				printf("MSG_VIDEO_RECV\n");
 				CVideoFileListProtocol* fileLIstPacket = dynamic_cast<CVideoFileListProtocol*>(pbase);
 				vector<std::string> fileList;
 				fileList.assign(fileLIstPacket->msg.filelist().begin(), fileLIstPacket->msg.filelist().end());
@@ -163,10 +150,8 @@ bool NetworkManager::get_a_packet(Mat* pImage)
 				{
 					std::string str = fileList.at(i);
 					CString videoStr(str.c_str());
-					SendMessage(hWnd, MESSAGE_USER, MSG_VIDEO_RECV, LPARAM(&videoStr));
+					SendMessage(hWnd, MESSAGE_USER, MSG_VIDEO_FILE_LIST, LPARAM(&videoStr));
 				}
-				printf("MSG_VIDEO_RECV END\n"); 
-				//PostMessage(hWnd, MESSAGE_ADD_ITEM_TO_LIST, MSG_PRINT_LOG, LPARAM(&str));
 			}
 			break;
 			default:

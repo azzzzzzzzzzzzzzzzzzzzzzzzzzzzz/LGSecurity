@@ -77,7 +77,7 @@ CVideoFileListProtocol::CVideoFileListProtocol(vector<string> &videos)
 		CVideoSelectedIndexProtocol
 ---------------------------*/
 CVideoSelectedIndexProtocol::CVideoSelectedIndexProtocol(const unsigned int index)
-	:CBaseProtocol(MSG_VIDEO_SELECTED, &msg)
+	:CBaseProtocol(MSG_VIDEO_SELECT, &msg)
 {
 	msg.set_index(index);
 }
@@ -95,7 +95,7 @@ CAckProtocol::CAckProtocol(protocol_msg::Ack::AckType type, uint32_t arg)
 		CLearningModeProtocol
 ---------------------------*/
 CLearningModeProtocol::CLearningModeProtocol(const string name, const unsigned int numImage)
-	:CBaseProtocol(MSG_CONTROL_LEARNING_MODE, &msg)
+	:CBaseProtocol(MSG_START_LEARNING_MODE, &msg)
 {
 	msg.set_n_shots(numImage);
 	msg.set_name(name);

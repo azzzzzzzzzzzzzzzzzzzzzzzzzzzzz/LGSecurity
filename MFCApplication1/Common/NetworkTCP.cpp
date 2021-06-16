@@ -114,15 +114,14 @@ TTcpConnectedPort *AcceptTcpConnectionTLS(TTcpListenPort *TcpListenPort,
 	int ret = 0;
 
 	TcpConnectedPort= new (std::nothrow) TTcpConnectedPort;  
-	TcpConnectedPort->ctx = NULL;
-	TcpConnectedPort->ssl = NULL;
+	
 
 	if (TcpConnectedPort==NULL)
 	{
 		fprintf(stderr, "TUdpPort memory allocation failed\n");
 		return(NULL);
 	}
-	
+
 	TcpConnectedPort->ConnectedFd= accept(TcpListenPort->ListenFd,
 			(struct sockaddr *) cli_addr,clilen);
 
@@ -249,20 +248,20 @@ TTcpConnectedPort *AcceptTcpConnection(TTcpListenPort *TcpListenPort,
 TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char * remoteportno)
 {
 	TTcpConnectedPort *TcpConnectedPort;
-	struct sockaddr_in myaddr;
 	int                s;
 	struct addrinfo   hints;
 	struct addrinfo   *result = NULL;
 
 	TcpConnectedPort= new (std::nothrow) TTcpConnectedPort; 
-	TcpConnectedPort->ctx = NULL;
-	TcpConnectedPort->ssl = NULL;
 
 	if (TcpConnectedPort==NULL)
 	{
 		fprintf(stderr, "TUdpPort memory allocation failed\n");
 		return(NULL);
 	}
+
+	TcpConnectedPort->ctx = NULL;
+	TcpConnectedPort->ssl = NULL;
 	TcpConnectedPort->ConnectedFd=BAD_SOCKET_FD;
 #if  defined(_WIN32) || defined(_WIN64)
 	WSADATA wsaData;
@@ -434,7 +433,6 @@ TTcpConnectedPort *OpenTcpConnectionTLS(const char *remotehostname, const char *
 TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * remoteportno)
 {
 	TTcpConnectedPort *TcpConnectedPort;
-	struct sockaddr_in myaddr;
 	int                s;
 	struct addrinfo   hints;
 	struct addrinfo   *result = NULL;
@@ -446,6 +444,8 @@ TTcpConnectedPort *OpenTcpConnection(const char *remotehostname, const char * re
 		fprintf(stderr, "TUdpPort memory allocation failed\n");
 		return(NULL);
 	}
+	TcpConnectedPort->ctx = NULL;
+	TcpConnectedPort->ssl = NULL;
 	TcpConnectedPort->ConnectedFd=BAD_SOCKET_FD;
 #if  defined(_WIN32) || defined(_WIN64)
 	WSADATA wsaData;
@@ -592,7 +592,7 @@ ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, 
 
 	for (size_t i = 0; i < length; i += bytes)
 	{
-		bytes = wolfSSL_recv(TcpConnectedPort->ssl, (char*)(data + i), length - i, 0);
+		bytes = wolfSSL_recv(TcpConnectedPort->ssl, (char*)(data + i), length - (size_t)i, 0);
 		if (bytes == -1)
 		{
 			printf("recv error %d\n", WSAGetLastError());
@@ -600,6 +600,7 @@ ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, 
 		}
 		else if (bytes == 0)
 		{
+			//CloseTcpConnectedPortTLS(&TcpConnectedPort);
 			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);
 		}
 		accumulated+=bytes;
@@ -648,6 +649,7 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
 		}
 		else if (bytes == 0)
 		{
+			//CloseTcpConnectedPort(&TcpConnectedPort);
 			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);
 		}
 		accumulated+=bytes;
@@ -690,7 +692,7 @@ ssize_t WriteDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data,
 	{
 		bytes_written = wolfSSL_send(TcpConnectedPort->ssl,
 				(char *)(data+total_bytes_written),
-				length - total_bytes_written,0);
+			(int)(length - total_bytes_written),0);
 		if (bytes_written == -1)
 		{
 			return(-1);
@@ -707,7 +709,7 @@ ssize_t WriteDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, si
 	{
 		bytes_written = send(TcpConnectedPort->ConnectedFd,
 				(char *)(data+total_bytes_written),
-				length - total_bytes_written,0);
+				(int)(length - total_bytes_written),0);
 		if (bytes_written == -1)
 		{
 			return(-1);
