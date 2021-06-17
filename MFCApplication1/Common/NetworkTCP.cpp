@@ -562,7 +562,7 @@ void print_pkt_header(const unsigned char* buff,int size) {
 
 }
 
-
+uint32_t g_prev_timestamp = 0;
 ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, size_t length)
 {
 	ssize_t bytes;
@@ -590,18 +590,24 @@ ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, 
 			printf("max packet length=%zu received=%zu packet_length=%d timestamp=%u msgtype=%d\n", 
 						length, bytes, p->hdr.size , p->hdr.timestamp, p->hdr.msgtype);
 			if (p->hdr.head[0]=='S' && p->hdr.head[1]=='B' && p->hdr.head[2]=='1' && p->hdr.head[3]=='T') {
-				my_packet_size=p->hdr.size;
+				if (g_prev_timestamp < p->hdr.timestamp) {
+					g_prev_timestamp = p->hdr.timestamp;
+					my_packet_size = p->hdr.size;
+				}
 			}
 			// print_pkt_header(data,60);
 		}
 		if (my_packet_size==-1) {
 			MyPacket *p=(MyPacket*)(data+i);
 			if (p->hdr.head[0]=='S' && p->hdr.head[1]=='B' && p->hdr.head[2]=='1' && p->hdr.head[3]=='T') {
-				my_packet_size=p->hdr.size;
-				printf("Found Header\n");
-				memcpy(data,data+i,bytes);
-				i=0;
-				accumulated=bytes;
+				if (g_prev_timestamp < p->hdr.timestamp) {
+					g_prev_timestamp = p->hdr.timestamp;
+					my_packet_size = p->hdr.size;
+					//printf("Found Header\n");
+					memcpy(data, data + i, bytes);
+					i = 0;
+					accumulated = bytes;
+				}
 			}
 		}
 		printf("accumulated packets=%zu   my_packet_size=%zd\n",accumulated, my_packet_size );
@@ -639,18 +645,24 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
 			printf("max packet length=%zu received=%zu packet_length=%d timestamp=%u msgtype=%d\n", 
 						length, bytes, p->hdr.size , p->hdr.timestamp, p->hdr.msgtype);
 			if (p->hdr.head[0]=='S' && p->hdr.head[1]=='B' && p->hdr.head[2]=='1' && p->hdr.head[3]=='T') {
-				my_packet_size=p->hdr.size;
+				if (g_prev_timestamp < p->hdr.timestamp) {
+					g_prev_timestamp = p->hdr.timestamp;
+					my_packet_size = p->hdr.size;
+				}
 			}
 			// print_pkt_header(data,60);
 		}
 		if (my_packet_size==-1) {
 			MyPacket *p=(MyPacket*)(data+i);
 			if (p->hdr.head[0]=='S' && p->hdr.head[1]=='B' && p->hdr.head[2]=='1' && p->hdr.head[3]=='T') {
-				my_packet_size=p->hdr.size;
-				printf("Found Header\n");
-				memcpy(data,data+i,bytes);
-				i=0;
-				accumulated=bytes;
+				if (g_prev_timestamp < p->hdr.timestamp) {
+					g_prev_timestamp = p->hdr.timestamp;
+					my_packet_size = p->hdr.size;
+					printf("Found Header\n");
+					memcpy(data, data + i, bytes);
+					i = 0;
+					accumulated = bytes;
+				}
 			}
 		}
 		printf("accumulated packets=%zu   my_packet_size=%zd\n",accumulated, my_packet_size );
