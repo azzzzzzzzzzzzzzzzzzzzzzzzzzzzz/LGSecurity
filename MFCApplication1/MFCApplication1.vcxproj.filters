@@ -36,16 +36,7 @@
     <ClInclude Include="Common\NetworkTCP.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Common\SG_InputBox.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\SG_InputBoxLib.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Common\TcpSendRecvJpeg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\utils.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ProtocolDef.h">
@@ -80,13 +71,7 @@
     <ClCompile Include="Common\NetworkTCP.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Common\SG_InputBox.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Common\TcpSendRecvJpeg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\utils.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Common\NetworkManager.cpp">

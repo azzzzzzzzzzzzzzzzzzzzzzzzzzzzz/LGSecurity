@@ -205,10 +205,7 @@
     <ClInclude Include="Common\Protocol\Msg\protocolLogin.pb.h" />
     <ClInclude Include="Common\Protocol\MyProtocol.h" />
     <ClInclude Include="Common\Protocol\ProtocolManager.h" />
-    <ClInclude Include="Common\SG_InputBox.h" />
-    <ClInclude Include="Common\SG_InputBoxLib.h" />
     <ClInclude Include="Common\TcpSendRecvJpeg.h" />
-    <ClInclude Include="Common\utils.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MFCApplication1.h" />
     <ClInclude Include="MFCApplication1Dlg.h" />
@@ -224,9 +221,7 @@
     <ClCompile Include="Common\Protocol\Msg\protocolLogin.pb.cc" />
     <ClCompile Include="Common\Protocol\MyProtocol.cpp" />
     <ClCompile Include="Common\Protocol\ProtocolManager.cpp" />
-    <ClCompile Include="Common\SG_InputBox.cpp" />
     <ClCompile Include="Common\TcpSendRecvJpeg.cpp" />
-    <ClCompile Include="Common\utils.cpp" />
     <ClCompile Include="MFCApplication1.cpp" />
     <ClCompile Include="MFCApplication1Dlg.cpp" />
     <ClCompile Include="pch.cpp">
