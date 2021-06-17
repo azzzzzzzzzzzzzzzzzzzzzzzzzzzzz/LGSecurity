@@ -20,7 +20,7 @@ private:
 	const int TCP_BUFF_SIZE = 1048676;
 	const string DEFAULT_PORT_SECURE = "55555";
 	const string DEFAULT_PORT_NON_SECURE = "50000";
-	const string DEFAULT_IP = "192.168.0.116";
+	string defaultip = "192.168.0.223";
 	TTcpConnectedPort* mTcpConnectedPort = NULL;	
 	CProtocolManager* mProtocolManager;
 	unsigned char* buff = new (std::nothrow) unsigned char[PACKET_MAX_BUFFER_SIZE];
@@ -28,7 +28,6 @@ private:
 	bool mIsAdmin;
 	UINT mMode;
 	UINT mRequestType;
-
 public:
 	bool get_a_packet(Mat* pImage);
 	bool send_packet(CBaseProtocol& protocol);
@@ -44,6 +43,8 @@ public:
 	UINT requestType();
 	void resetStatus();
 	void closeTCPConnection();
+	void setIPAdress(const string ip);
+	CString getIPAdress();
 	NetworkManager();
 	~NetworkManager();
 };

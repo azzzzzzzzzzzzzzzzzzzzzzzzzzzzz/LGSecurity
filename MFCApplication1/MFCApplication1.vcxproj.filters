@@ -36,9 +36,6 @@
     <ClInclude Include="Common\NetworkTCP.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Common\NetworkUDP.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Common\SG_InputBox.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -46,9 +43,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Common\TcpSendRecvJpeg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\UdpSendRecvJpeg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Common\utils.h">
@@ -86,16 +80,10 @@
     <ClCompile Include="Common\NetworkTCP.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Common\NetworkUDP.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Common\SG_InputBox.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Common\TcpSendRecvJpeg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\UdpSendRecvJpeg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Common\utils.cpp">

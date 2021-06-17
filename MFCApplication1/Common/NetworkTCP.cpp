@@ -579,7 +579,7 @@ ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, 
 			printf("recv error %d\n", WSAGetLastError());
 			return (-1);
 		}
-		else if (bytes == 0)
+		else if (bytes == 0 || bytes == 10053 || bytes == 10052)
 		{
 			//CloseTcpConnectedPortTLS(&TcpConnectedPort);
 			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);
@@ -628,7 +628,7 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
 			printf("recv error %d\n", WSAGetLastError());
 			return (-1);
 		}
-		else if (bytes == 0)
+		else if (bytes == 0 || bytes == 10053 || bytes == 10052)
 		{
 			//CloseTcpConnectedPort(&TcpConnectedPort);
 			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);

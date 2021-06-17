@@ -111,7 +111,8 @@ void CMFCApplication1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_VIDEO, m_ListVideo);
 	DDX_Control(pDX, IDC_BUTTON_SELECT_VIDEO, m_btnSelect);
 	DDX_Control(pDX, IDC_BUTTON_LOGIN, m_btnLogin);
-	DDX_Control(pDX, IDC_BUTTON_LOGOUT, m_btnLogout);
+	DDX_Control(pDX, IDC_BUTTON_LOGOUT, m_btnLogout); 
+	DDX_Control(pDX, IDC_IPADDRESS1, m_IPEdit);
 }
 
 BEGIN_MESSAGE_MAP(CMFCApplication1Dlg, CDialogEx)
@@ -165,6 +166,7 @@ BOOL CMFCApplication1Dlg::OnInitDialog()
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	setlocale(LC_ALL, "");
+	m_IPEdit.SetAddress(192, 168, 0, 116);
 	m_EditImageNum.SetWindowText(_T("5"));
 	m_spinIMGNum.SetRange(5, 8);
 	m_spinIMGNum.SetPos(1);
@@ -225,6 +227,14 @@ void CMFCApplication1Dlg::OnPaint()
 HCURSOR CMFCApplication1Dlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
+}
+
+void CMFCApplication1Dlg::setIPAdress()
+{
+	CString ipStr;
+	m_IPEdit.GetWindowText(ipStr);
+	string str = string(CT2CA(ipStr));
+	mNetworkManager->setIPAdress(str);
 }
 
 
@@ -356,6 +366,8 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 		return;
 	}
 
+	setIPAdress();
+
 	m_btnLogin.EnableWindow(FALSE);
 	m_radioSecure.EnableWindow(FALSE);
 	m_radioNonSecure.EnableWindow(FALSE);
@@ -381,7 +393,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonLogin()
 	string pws = string(CT2CA(pw));
 	CLoginProtocol login(ids, pws);
 	mNetworkManager->send_packet(login);
-	SetTimer(REQ_TIMEOUT_TIMER, 15000, NULL);
+	SetTimer(REQ_TIMEOUT_TIMER, 5000, NULL);
 	// receive login result
 
 	// login success

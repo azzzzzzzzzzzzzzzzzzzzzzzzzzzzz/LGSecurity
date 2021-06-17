@@ -50,6 +50,7 @@ protected:
 	CEdit m_EditLog;
 	CSpinButtonCtrl m_spinIMGNum;
 	CListBox m_ListVideo;
+	CIPAddressCtrl m_IPEdit;
 	UINT mLearningCnt;
 	
 	// 생성된 메시지 맵 함수
@@ -57,6 +58,7 @@ protected:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	void setIPAdress();
 	DECLARE_MESSAGE_MAP()
 	bool m_bModeStart;
 	CWinThread* m_pThread;

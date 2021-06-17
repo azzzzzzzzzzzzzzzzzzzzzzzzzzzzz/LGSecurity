@@ -22,14 +22,14 @@ bool NetworkManager::openTcpConnection()
 	printf("is Secure? = %d\n", mIsSecure);
 	if (mIsSecure)
 	{
-		if ((mTcpConnectedPort = OpenTcpConnectionTLS(DEFAULT_IP.c_str(), DEFAULT_PORT_SECURE.c_str())) == NULL)
+		if ((mTcpConnectedPort = OpenTcpConnectionTLS(defaultip.c_str(), DEFAULT_PORT_SECURE.c_str())) == NULL)
 			return false;
 		else
 			return true;
 	}
 	else
 	{
-		if ((mTcpConnectedPort = OpenTcpConnection(DEFAULT_IP.c_str(), DEFAULT_PORT_NON_SECURE.c_str())) == NULL)
+		if ((mTcpConnectedPort = OpenTcpConnection(defaultip.c_str(), DEFAULT_PORT_NON_SECURE.c_str())) == NULL)
 			return false;
 		else
 			return true;
@@ -87,6 +87,16 @@ void NetworkManager::resetStatus()
 void NetworkManager::closeTCPConnection()
 {
 	CloseTcpConnectedPort(&mTcpConnectedPort);
+}
+
+void NetworkManager::setIPAdress(const string ip)
+{
+	defaultip = ip;
+}
+
+CString NetworkManager::getIPAdress()
+{
+	return CString();
 }
 
 bool NetworkManager::get_a_packet(Mat* pImage)
