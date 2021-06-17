@@ -544,6 +544,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		setModeRadioBtnStatus();
 		break;
 	case MSG_LOGIN_FAIL:
+		mNetworkManager->setRequestType(0);
 		m_btnLogin.EnableWindow(TRUE);
 		m_radioSecure.EnableWindow(TRUE);
 		m_radioNonSecure.EnableWindow(TRUE);
