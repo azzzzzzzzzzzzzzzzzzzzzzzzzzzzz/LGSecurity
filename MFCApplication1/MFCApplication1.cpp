@@ -62,6 +62,21 @@ BOOL CMFCApplication1App::InitInstance()
 	// MFC 컨트롤의 테마를 사용하기 위해 "Windows 원형" 비주얼 관리자 활성화
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
+	HANDLE hMutex = OpenMutex(
+		MUTEX_ALL_ACCESS, 0, _T("MyApp1.0"));
+	if (!hMutex)
+		// Mutex doesn’t exist. This is
+		// the first instance so create
+		// the mutex.
+		hMutex =
+		CreateMutex(0, 0, _T("MyApp1.0"));
+	else
+	{
+		AfxMessageBox(_T("An Instance of this application is already running..."));
+		// The mutex exists so this is the
+		// the second instance so return.
+		return 0;
+	}
 	// 표준 초기화
 	// 이들 기능을 사용하지 않고 최종 실행 파일의 크기를 줄이려면
 	// 아래에서 필요 없는 특정 초기화
