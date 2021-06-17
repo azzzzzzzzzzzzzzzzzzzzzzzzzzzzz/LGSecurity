@@ -579,7 +579,7 @@ ssize_t ReadDataTcpTLS(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, 
 			printf("recv error %d\n", WSAGetLastError());
 			return (-1);
 		}
-		else if (bytes == 0 || bytes == 10053 || bytes == 10052)
+		else if (bytes == 0)
 		{
 			//CloseTcpConnectedPortTLS(&TcpConnectedPort);
 			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);
@@ -634,7 +634,7 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
 			printf("recv error %d\n", WSAGetLastError());
 			return (-1);
 		}
-		else if (bytes == 0 || bytes == 10053 || bytes == 10052)
+		else if (bytes == 0)
 		{
 			//CloseTcpConnectedPort(&TcpConnectedPort);
 			SendMessage(hWnd, MESSAGE_USER, MSG_RECONNECT, NULL);
@@ -658,7 +658,7 @@ ssize_t ReadDataTcp(TTcpConnectedPort *TcpConnectedPort,unsigned char *data, siz
 				if (g_prev_timestamp < p->hdr.timestamp) {
 					g_prev_timestamp = p->hdr.timestamp;
 					my_packet_size = p->hdr.size;
-					printf("Found Header\n");
+					//printf("Found Header\n");
 					memcpy(data, data + i, bytes);
 					i = 0;
 					accumulated = bytes;
