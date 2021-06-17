@@ -426,6 +426,7 @@ void CMFCApplication1Dlg::OnBnClickedButtonModeApply()
 		}
 		else if (m_radioBtnOperMode == MODE_TEST_RUN)
 		{
+			clearVideoList();
 			m_ListVideo.EnableWindow(TRUE);
 			m_btnSelect.EnableWindow(TRUE);
 			CControlModeProtocol mode(protocol_msg::ControlMode::TESTRUN);
