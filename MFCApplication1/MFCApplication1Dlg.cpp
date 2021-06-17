@@ -550,6 +550,10 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 		m_radioNonSecure.EnableWindow(TRUE);
 		m_EditID.EnableWindow(TRUE);
 		m_EditPW.EnableWindow(TRUE);
+		m_isWorkingThread = false;
+		resetStatus();
+		mNetworkManager->closeTCPConnection();
+		mNetworkManager->resetStatus();
 		AfxMessageBox(_T("Login failed"));
 		break;
 	case MSG_MODE_CHANGE_SUCCESS:
