@@ -525,6 +525,7 @@ LRESULT CMFCApplication1Dlg::recvUserMsg(WPARAM wParam, LPARAM IParam)
 			m_radioTestRun.SetCheck(FALSE);
 			m_radioLearning.SetCheck(FALSE);
 			m_radioRun.SetCheck(TRUE);
+			m_radioBtnOperMode = 0;
 		}
 		m_btnStart.EnableWindow(TRUE);
 		m_btnLogout.EnableWindow(TRUE);

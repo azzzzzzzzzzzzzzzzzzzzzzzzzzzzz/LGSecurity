@@ -43,7 +43,7 @@ class CControlModeProtocol : public CBaseProtocol
 {
 public:
 	CControlModeProtocol():CBaseProtocol(MSG_CONTROL_MODE, &msg){};
-	CControlModeProtocol(protocol_msg::ControlMode::OpMode op);
+	explicit CControlModeProtocol(protocol_msg::ControlMode::OpMode op);
 	protocol_msg::ControlMode msg;
 };
 
